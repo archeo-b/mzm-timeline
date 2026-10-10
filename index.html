@@ -35,11 +35,15 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
+            /* Zakomponování obrázku 321.png přímo do pozadí jako muzejní vodoznak */
             background-image: 
+                url('321.png'),
                 radial-gradient(circle at 50% 30%, rgba(30, 35, 45, 0.6) 0%, rgba(10, 12, 16, 0.95) 70%),
                 linear-gradient(to bottom, rgba(10,12,16,0.4), rgba(10,12,16,0.9));
-            background-size: cover;
-            background-position: center;
+            background-repeat: no-repeat;
+            background-position: left 5% bottom 5%;
+            background-size: 350px auto, cover, cover;
+            background-blend-mode: luminosity, normal, normal;
             display: flex;
             flex-direction: column;
         }
@@ -52,19 +56,6 @@
             background: radial-gradient(circle at 50% 15%, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
             pointer-events: none;
             z-index: 0;
-        }
-
-        /* Decorative background artifact (321.png) */
-        .bg-artifact {
-            position: absolute;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.12;
-            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.9));
-            bottom: 5%;
-            left: 3%;
-            width: 240px;
-            transform: rotate(-10deg);
         }
 
         .container {
@@ -554,9 +545,6 @@
 </head>
 <body>
 
-    <!-- Atmospheric background artifact (321.png) -->
-    <img src="321.png" alt="321.png" class="bg-artifact">
-
     <div class="container">
         <!-- HEADER SECTION -->
         <header id="appHeader">
@@ -566,7 +554,7 @@
                     <div class="title-sub">KELTSKÉ OPPIDUM</div>
                     <div class="title-timeline-heading">HISTORIE VÝZKUMŮ V ČASE</div>
                 </div>
-                <!-- 123.png vráceno do záhlaví -->
+                <!-- 123.png v záhlaví -->
                 <img src="123.png" alt="123.png" class="artifact-header-img">
             </div>
         </header>
