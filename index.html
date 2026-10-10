@@ -44,6 +44,7 @@
             flex-direction: column;
         }
 
+        /* Ambient light effect */
         body::before {
             content: '';
             position: absolute;
@@ -51,6 +52,19 @@
             background: radial-gradient(circle at 50% 15%, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
             pointer-events: none;
             z-index: 0;
+        }
+
+        /* Decorative background artifact (321.png) */
+        .bg-artifact {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.12;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.9));
+            bottom: 5%;
+            left: 3%;
+            width: 240px;
+            transform: rotate(-10deg);
         }
 
         .container {
@@ -72,6 +86,7 @@
             padding-top: 10px;
             margin-bottom: 5px;
             position: relative;
+            z-index: 2;
         }
 
         .header-brand-container {
@@ -138,12 +153,13 @@
             margin: 10px 0 20px 0;
             display: flex;
             align-items: center;
+            z-index: 2;
         }
 
         .timeline-container {
             width: 100%;
             overflow-x: auto;
-            scroll-behavior: auto; /* Změněno na auto pro plynulý JS drag */
+            scroll-behavior: auto;
             scrollbar-width: none;
             -ms-overflow-style: none;
             cursor: grab;
@@ -164,7 +180,7 @@
             align-items: center;
             position: relative;
             min-width: max-content;
-            padding: 0 50vw;
+            padding: 0 25vw;
         }
 
         .timeline-line {
@@ -292,6 +308,7 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 100px rgba(0,0,0,0.5);
             backdrop-filter: blur(10px);
             position: relative;
+            z-index: 2;
             overflow: hidden;
             max-height: calc(100vh - 240px);
         }
@@ -537,20 +554,19 @@
 </head>
 <body>
 
+    <!-- Atmospheric background artifact (321.png) -->
+    <img src="321.png" alt="321.png" class="bg-artifact">
+
     <div class="container">
         <!-- HEADER SECTION -->
         <header id="appHeader">
             <div class="header-brand-container">
-                <!-- Levý artefakt (321.png) bez popisku -->
-                <img src="321.png" alt="321.png" class="artifact-header-img">
-                
                 <div class="title-text-group">
                     <h1 class="title-main">STARÉ HRADISKO</h1>
                     <div class="title-sub">KELTSKÉ OPPIDUM</div>
                     <div class="title-timeline-heading">HISTORIE VÝZKUMŮ V ČASE</div>
                 </div>
-
-                <!-- Pravý artefakt (123.png) bez popisku -->
+                <!-- 123.png vráceno do záhlaví -->
                 <img src="123.png" alt="123.png" class="artifact-header-img">
             </div>
         </header>
@@ -676,8 +692,7 @@
                     <div class="timeline-label">${item.label}</div>
                 `;
 
-                itemEl.addEventListener('click', (e) => {
-                    // Prevent click triggering if user was dragging
+                itemEl.addEventListener('click', () => {
                     if (isDragging) return;
                     selectTimelineItem(index);
                 });
@@ -712,7 +727,10 @@
             const containerWidth = timelineContainer.offsetWidth;
             const itemLeft = activeEl.offsetLeft;
             const itemWidth = activeEl.offsetWidth;
-            const targetScrollLeft = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+            let targetScrollLeft = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+
+            const maxScroll = timelineContainer.scrollWidth - timelineContainer.clientWidth;
+            targetScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScroll));
 
             timelineContainer.scrollTo({
                 left: targetScrollLeft,
@@ -736,7 +754,7 @@
             displayCaptionSub.textContent = data.captionSub;
         }
 
-        // SMOOTH DRAG & MOMENTUM SCROLLING IMPLEMENTATION
+        // SMOOTH DRAG WITH BOUNDS CHECKING
         let isDown = false;
         let isDragging = false;
         let startX;
@@ -763,7 +781,16 @@
             }
 
             if (isDragging) {
-                timelineContainer.scrollLeft = scrollLeft - walk;
+                let newScroll = scrollLeft - walk;
+                const maxScroll = timelineContainer.scrollWidth - timelineContainer.clientWidth;
+                
+                if (newScroll < 0) {
+                    newScroll = newScroll * 0.3;
+                } else if (newScroll > maxScroll) {
+                    newScroll = maxScroll + (newScroll - maxScroll) * 0.3;
+                }
+
+                timelineContainer.scrollLeft = newScroll;
             }
         }
 
@@ -772,21 +799,30 @@
             isDown = false;
 
             if (isDragging) {
-                const elapsedTime = Date.now() - startTime;
-                const distance = timelineContainer.scrollLeft - startScrollLeft;
+                const maxScroll = timelineContainer.scrollWidth - timelineContainer.clientWidth;
                 
-                // Add smooth momentum effect on release if dragged quickly
-                if (elapsedTime < 300 && Math.abs(distance) > 10) {
-                    const speed = distance / elapsedTime;
-                    const momentum = speed * 150;
-                    timelineContainer.scrollTo({
-                        left: timelineContainer.scrollLeft + momentum,
-                        behavior: 'smooth'
-                    });
+                if (timelineContainer.scrollLeft < 0) {
+                    timelineContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                } else if (timelineContainer.scrollLeft > maxScroll) {
+                    timelineContainer.scrollTo({ left: maxScroll, behavior: 'smooth' });
+                } else {
+                    const elapsedTime = Date.now() - startTime;
+                    const distance = timelineContainer.scrollLeft - startScrollLeft;
+                    
+                    if (elapsedTime < 300 && Math.abs(distance) > 10) {
+                        const speed = distance / elapsedTime;
+                        let momentum = speed * 120;
+                        let target = timelineContainer.scrollLeft + momentum;
+                        target = Math.max(0, Math.min(target, maxScroll));
+                        
+                        timelineContainer.scrollTo({
+                            left: target,
+                            behavior: 'smooth'
+                        });
+                    }
                 }
             }
             
-            // Reset drag flag after short delay so clicks don't fire immediately after drag
             setTimeout(() => { isDragging = false; }, 50);
         }
 
