@@ -39,35 +39,35 @@
             flex-direction: column;
         }
 
-        /* Ozdobné rohové prvky */
+        /* Ozdobné rohové prvky - zcela v krajích */
         .corner-ornament {
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             pointer-events: none;
             z-index: 10;
-            opacity: 0.85;
+            opacity: 0.9;
             filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
         }
 
         .corner-lhr {
-            top: 15px;
-            left: 15px;
+            top: 0;
+            left: 0;
         }
 
         .corner-phr {
-            top: 15px;
-            right: 15px;
+            top: 0;
+            right: 0;
         }
 
         .corner-ldr {
-            bottom: 15px;
-            left: 15px;
+            bottom: 0;
+            left: 0;
         }
 
         .corner-pdr {
-            bottom: 15px;
-            right: 15px;
+            bottom: 0;
+            right: 0;
         }
 
         .container {
@@ -77,7 +77,7 @@
             max-width: 1600px;
             height: 100vh;
             margin: 0 auto;
-            padding: 20px 50px;
+            padding: 25px 60px; /* Větší boční odsazení, aby se obsah nedotýkal rohových ozdob */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -86,7 +86,7 @@
         /* HEADER SECTION */
         header {
             text-align: center;
-            padding-top: 10px;
+            padding-top: 5px;
             margin-bottom: 5px;
             position: relative;
             z-index: 2;
@@ -152,7 +152,7 @@
         /* TIMELINE SECTION */
         .timeline-wrapper {
             position: relative;
-            margin: 10px 0 20px 0;
+            margin: 5px 0 15px 0;
             display: flex;
             align-items: center;
             z-index: 2;
@@ -294,8 +294,8 @@
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        .nav-arrow.left { left: -10px; }
-        .nav-arrow.right { right: -10px; }
+        .nav-arrow.left { left: -5px; }
+        .nav-arrow.right { right: -5px; }
 
         /* MAIN CONTENT PANEL */
         .content-panel {
@@ -312,7 +312,7 @@
             position: relative;
             z-index: 2;
             overflow: hidden;
-            max-height: calc(100vh - 240px);
+            max-height: calc(100vh - 230px);
         }
 
         /* LEFT COLUMN: TEXT CONTENT */
@@ -556,7 +556,7 @@
 </head>
 <body>
 
-    <!-- Ozdobné rohové prvky -->
+    <!-- Ozdobné rohové prvky na samotných okrajích obrazovky -->
     <img src="LHR.png" alt="Levý horní roh" class="corner-ornament corner-lhr">
     <img src="PHR.png" alt="Pravý horní roh" class="corner-ornament corner-phr">
     <img src="LDR.png" alt="Levý dolní roh" class="corner-ornament corner-ldr">
