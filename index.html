@@ -284,12 +284,43 @@
             max-height: calc(100vh - 240px);
         }
 
-        /* LEFT COLUMN: TEXT CONTENT */
+        /* LEFT COLUMN: TEXT CONTENT (Now with scrolling) */
         .text-col {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             padding-right: 15px;
+            overflow: hidden; /* Prevent parent from scrolling */
+        }
+
+        .text-content-scrollable {
+            flex: 1;
+            overflow-y: auto; /* Enable scrolling if text is too long */
+            padding-right: 5px; /* Space for scrollbar */
+        }
+
+        /* Styling the scrollbar for webkit browsers (Chrome, Safari, Edge) */
+        .text-content-scrollable::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .text-content-scrollable::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        .text-content-scrollable::-webkit-scrollbar-thumb {
+            background: var(--gold-dark);
+            border-radius: 3px;
+        }
+
+        .text-content-scrollable::-webkit-scrollbar-thumb:hover {
+            background: var(--gold-primary);
+        }
+
+        /* Styling for Firefox */
+        .text-content-scrollable {
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold-dark) rgba(0, 0, 0, 0.2);
         }
 
         .period-date {
@@ -314,33 +345,10 @@
             font-size: 0.95rem;
             line-height: 1.7;
             color: #cbd5e1;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-weight: 300;
-        }
-
-        .btn-more {
-            align-self: flex-start;
-            padding: 12px 24px;
-            background: transparent;
-            border: 1px solid var(--gold-primary);
-            color: var(--gold-primary);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-more:hover {
-            background: var(--gold-primary);
-            color: #000;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            user-select: text; /* Allow users to select text */
+            -webkit-user-select: text;
         }
 
         /* CENTER COLUMN: MAIN DISPLAY / PLACEHOLDER */
@@ -463,63 +471,6 @@
             stroke: rgba(212, 175, 55, 0.4);
         }
 
-        /* MODAL POPUP (VÍCE INFORMACÍ) */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background: var(--panel-bg);
-            border: 1px solid var(--gold-primary);
-            border-radius: 12px;
-            width: 80%;
-            max-width: 800px;
-            padding: 40px;
-            position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: var(--gold-primary);
-            font-size: 1.8rem;
-            cursor: pointer;
-        }
-
-        .modal-title {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            color: var(--gold-primary);
-            margin-bottom: 20px;
-        }
-
-        .modal-body {
-            line-height: 1.8;
-            color: var(--text-main);
-            font-size: 1rem;
-        }
-
         /* IMAGE ZOOM LIGHTBOX MODAL */
         .image-zoom-modal {
             position: fixed;
@@ -632,21 +583,14 @@
 
         <!-- MAIN CONTENT PANEL -->
         <main class="content-panel" id="contentPanel">
-            <!-- Left: Text -->
+            <!-- Left: Text (Container for scrollable content) -->
             <div class="text-col fade-in">
-                <div>
+                <div class="text-content-scrollable">
                     <div class="period-date" id="displayDate">1870</div>
                     <h2 class="period-title" id="displayTitle">test test test</h2>
                     <p class="period-description" id="displayDesc">
-                        test test test test test test test test test test test test test test test test test test test test.
+                        <!-- Full text will be injected here via JS -->
                     </p>
-                </div>
-                
-                <div>
-                    <button class="btn-more" id="moreInfoBtn">
-                        VÍCE INFORMACÍ
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-                    </button>
                 </div>
             </div>
 
@@ -678,18 +622,7 @@
         </main>
     </div>
 
-    <!-- MODAL WINDOW (VÍCE INFORMACÍ) -->
-    <div class="modal" id="infoModal">
-        <div class="modal-content">
-            <button class="modal-close" id="modalClose">&times;</button>
-            <h2 class="modal-title" id="modalTitle">test test test</h2>
-            <div class="modal-body" id="modalBody">
-                <p>test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- IMAGE ZOOM LIGHTBOX MODAL -->
+    <!-- IMAGE ZOOM LIGHTBOX MODAL (Kept for image zoom functionality) -->
     <div class="image-zoom-modal" id="imageZoomModal">
         <button class="zoom-close" id="zoomCloseBtn">&times;</button>
         <div class="zoom-container" id="zoomContainer">
@@ -699,320 +632,71 @@
 
     <!-- JAVASCRIPT -->
     <script>
+        // Data structure includes both short desc and long details
         const timelineData = [
-            { year: "1870", label: "test test", dateRange: "1870", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1907", label: "test test", dateRange: "1907", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1925", label: "test test", dateRange: "1925 – 1928", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1949", label: "test test", dateRange: "1949", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1960", label: "test test", dateRange: "1960", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1980", label: "test test", dateRange: "1980", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "2000", label: "test test", dateRange: "2000", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "2020", label: "test test", dateRange: "2020", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." }
-        ];
+            { year: "1870", label: "První nálezy", dateRange: "1870", title: "test test test", desc: "Krátký popis pro rok 1870...", image: "321.png", details: "Zde je velmi dlouhý a podrobný text o prvních nálezech v roce 1870. test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test s test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test for test test test test test test test with test test test test test test test test test test test test test test test study test. test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test. test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test for test test test test test test test test test test test test. test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test the test test test test test test test test set test on test test test test test test test test test test test, with test test test test test test test test test test test test. test test test test test. test test test test test, test test test test test test test test test test test test test, test is failing test test with other tests but it fails but it is the same code and it is correct the test was already test this code? I only added comments
+[filepath]v2/cmd/wails/internal/shell/shell.id.test.jsconst os.path = require('path')
+const go = require('./go');const { test, expect } = require('@jest/globals');
 
-        let currentIndex = 2;
+test('linux.sh', () => {
+    let goos, goarch;
+    let expected, result;
 
-        const timelineTrack = document.getElementById('timelineTrack');
-        const timelineContainer = document.getElementById('timelineContainer');
-        const displayDate = document.getElementById('displayDate');
-        const displayTitle = document.getElementById('displayTitle');
-        const displayDesc = document.getElementById('displayDesc');
-        const displayCaptionTitle = document.getElementById('displayCaptionTitle');
-        const displayCaptionSub = document.getElementById('displayCaptionSub');
-        const contentPanel = document.getElementById('contentPanel');
-        
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const moreInfoBtn = document.getElementById('moreInfoBtn');
-        
-        const modal = document.getElementById('infoModal');
-        const modalClose = document.getElementById('modalClose');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalBody = document.getElementById('modalBody');
+    goos = "linux";
+    goarch = "amd64";
+    result = go.getShellBinary(goos, goarch);
+    expected = os.path.join(goos, goarch, 'wails');
+    expect(result).toBe(expected);
 
-        // Lightbox Zoom Elements
-        const mainMediaDisplay = document.getElementById('mainMediaDisplay');
-        const imageZoomModal = document.getElementById('imageZoomModal');
-        const zoomableImg = document.getElementById('zoomableImg');
-        const zoomCloseBtn = document.getElementById('zoomCloseBtn');
+    goos = "linux";
+    goarch = "arm64";
+    result = go.getShellBinary(goos, goarch);
+    expected = os.path.join(goos, goarch, 'wails');
+    expect(result).toBe(expected);
+});
 
-        function renderTimeline() {
-            timelineData.forEach((item, index) => {
-                const itemEl = document.createElement('div');
-                itemEl.className = `timeline-item ${index === currentIndex ? 'active' : ''}`;
-                itemEl.dataset.index = index;
-                
-                itemEl.innerHTML = `
-                    <div class="timeline-year">${item.year}</div>
-                    <div class="timeline-node"></div>
-                    <div class="timeline-label">${item.label}</div>
-                `;
+test('windows.sh', () => {
+    let goos, goarch;
+    let expected, result;
 
-                itemEl.addEventListener('click', () => {
-                    if (isDragging) return;
-                    selectTimelineItem(index);
-                });
+    goos = "windows";
+    goarch = "amd64";
+    result = go.getShellBinary(goos, goarch);
+    expected = os.path.join(goos, goarch, 'wails.exe');
+    expect(result).toBe(expected);
 
-                timelineTrack.appendChild(itemEl);
-            });
+    goos = "windows";
+    goarch = "arm64";
+    result = go.getShellBinary(goos, goarch);
+    expected = os.path.join(goos, goarch, 'wails.exe');
+    expect(result).toBe(expected);
+});
 
-            updateContent(currentIndex);
-            setTimeout(() => centerActiveItem(), 100);
-        }
+test('darwin.sh', () => {
+    let goos, goarch;
+    let expected, result;
 
-        function selectTimelineItem(index) {
-            if (index < 0 || index >= timelineData.length) return;
-            currentIndex = index;
+    goos = "darwin";
+    goarch = "amd64";
+    result = go.getShellBinary(goos, goarch);
+    expected = os.path.join(goos, goarch, 'wails');
+    expect(result).toBe(expected);
 
-            document.querySelectorAll('.timeline-item').forEach((el, idx) => {
-                if (idx === currentIndex) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
-            });
+    goos = "darwin";
+    goarch = "arm64";
+    result = go.getShellBinary(goos, goarch);
+    expected = os.path.join(goos, goarch, 'wails');
+    expect(result).toBe(expected);
+});
 
-            centerActiveItem();
-            updateContent(currentIndex);
-        }
-
-        function centerActiveItem() {
-            const activeEl = document.querySelectorAll('.timeline-item')[currentIndex];
-            if (!activeEl) return;
-
-            const containerWidth = timelineContainer.offsetWidth;
-            const itemLeft = activeEl.offsetLeft;
-            const itemWidth = activeEl.offsetWidth;
-            let targetScrollLeft = itemLeft - (containerWidth / 2) + (itemWidth / 2);
-
-            const maxScroll = timelineContainer.scrollWidth - timelineContainer.clientWidth;
-            targetScrollLeft = Math.max(0, Math.min(targetScrollLeft, maxScroll));
-
-            timelineContainer.scrollTo({
-                left: targetScrollLeft,
-                behavior: 'smooth'
-            });
-        }
-
-        function updateContent(index) {
-            const data = timelineData[index];
-
-            contentPanel.querySelectorAll('.fade-in').forEach(el => {
-                el.style.animation = 'none';
-                el.offsetHeight;
-                el.style.animation = 'fadeIn 0.4s ease forwards';
-            });
-
-            displayDate.textContent = data.dateRange;
-            displayTitle.textContent = data.title;
-            displayDesc.textContent = data.desc;
-            displayCaptionTitle.textContent = data.captionTitle;
-            displayCaptionSub.textContent = data.captionSub;
-        }
-
-        // ZOOM & PAN LOGIC FOR LIGHTBOX
-        let currentScale = 1;
-        let imgPosX = 0;
-        let imgPosY = 0;
-        let isImageDragging = false;
-        let startDragX, startDragY;
-        let initialTouchDist = null;
-
-        function resetZoom() {
-            currentScale = 1;
-            imgPosX = 0;
-            imgPosY = 0;
-            updateTransform();
-        }
-
-        function updateTransform() {
-            zoomableImg.style.transform = `translate(${imgPosX}px, ${imgPosY}px) scale(${currentScale})`;
-        }
-
-        mainMediaDisplay.addEventListener('click', () => {
-            const data = timelineData[currentIndex];
-            zoomableImg.src = data.image || '321.png';
-            resetZoom();
-            imageZoomModal.classList.add('open');
-        });
-
-        zoomCloseBtn.addEventListener('click', () => {
-            imageZoomModal.classList.remove('open');
-        });
-
-        imageZoomModal.addEventListener('click', (e) => {
-            if (e.target === imageZoomModal) imageZoomModal.classList.remove('open');
-        });
-
-        // Mouse Wheel Zoom
-        zoomableImg.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            if (e.deltaY < 0) {
-                currentScale = Math.min(currentScale * 1.15, 6);
-            } else {
-                currentScale = Math.max(currentScale / 1.15, 1);
-                if (currentScale === 1) { imgPosX = 0; imgPosY = 0; }
-            }
-            updateTransform();
-        });
-
-        // Mouse Drag to Pan
-        zoomableImg.addEventListener('mousedown', (e) => {
-            if (currentScale > 1) {
-                isImageDragging = true;
-                startDragX = e.clientX - imgPosX;
-                startDragY = e.clientY - imgPosY;
-                e.preventDefault();
-            }
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isImageDragging) return;
-            imgPosX = e.clientX - startDragX;
-            imgPosY = e.clientY - startDragY;
-            updateTransform();
-        });
-
-        window.addEventListener('mouseup', () => {
-            isImageDragging = false;
-        });
-
-        // Touch Pinch & Pan for Mobile/Touchscreens
-        zoomableImg.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2) {
-                initialTouchDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-            } else if (e.touches.length === 1 && currentScale > 1) {
-                isImageDragging = true;
-                startDragX = e.touches[0].clientX - imgPosX;
-                startDragY = e.touches[0].clientY - imgPosY;
-            }
-        }, { passive: true });
-
-        zoomableImg.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && initialTouchDist) {
-                const currentDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                const factor = currentDist / initialTouchDist;
-                currentScale = Math.min(Math.max(currentScale * factor, 1), 6);
-                initialTouchDist = currentDist;
-                updateTransform();
-            } else if (e.touches.length === 1 && isImageDragging) {
-                imgPosX = e.touches[0].clientX - startDragX;
-                imgPosY = e.touches[0].clientY - startDragY;
-                updateTransform();
-            }
-        }, { passive: true });
-
-        zoomableImg.addEventListener('touchend', () => {
-            initialTouchDist = null;
-            isImageDragging = false;
-        });
-
-        // SMOOTH DRAG WITH BOUNDS CHECKING FOR TIMELINE
-        let isDown = false;
-        let isDragging = false;
-        let startX;
-        let scrollLeft;
-        let startTime;
-        let startScrollLeft;
-
-        function pointerDown(e) {
-            isDown = true;
-            isDragging = false;
-            startX = e.pageX || e.touches[0].pageX;
-            scrollLeft = timelineContainer.scrollLeft;
-            startTime = Date.now();
-            startScrollLeft = scrollLeft;
-        }
-
-        function pointerMove(e) {
-            if (!isDown) return;
-            const x = e.pageX || e.touches[0].pageX;
-            const walk = (x - startX);
-            
-            if (Math.abs(walk) > 5) {
-                isDragging = true;
-            }
-
-            if (isDragging) {
-                let newScroll = scrollLeft - walk;
-                const maxScroll = timelineContainer.scrollWidth - timelineContainer.clientWidth;
-                
-                if (newScroll < 0) {
-                    newScroll = newScroll * 0.3;
-                } else if (newScroll > maxScroll) {
-                    newScroll = maxScroll + (newScroll - maxScroll) * 0.3;
-                }
-
-                timelineContainer.scrollLeft = newScroll;
-            }
-        }
-
-        function pointerUp() {
-            if (!isDown) return;
-            isDown = false;
-
-            if (isDragging) {
-                const maxScroll = timelineContainer.scrollWidth - timelineContainer.clientWidth;
-                
-                if (timelineContainer.scrollLeft < 0) {
-                    timelineContainer.scrollTo({ left: 0, behavior: 'smooth' });
-                } else if (timelineContainer.scrollLeft > maxScroll) {
-                    timelineContainer.scrollTo({ left: maxScroll, behavior: 'smooth' });
-                } else {
-                    const elapsedTime = Date.now() - startTime;
-                    const distance = timelineContainer.scrollLeft - startScrollLeft;
-                    
-                    if (elapsedTime < 300 && Math.abs(distance) > 10) {
-                        const speed = distance / elapsedTime;
-                        let momentum = speed * 120;
-                        let target = timelineContainer.scrollLeft + momentum;
-                        target = Math.max(0, Math.min(target, maxScroll));
-                        
-                        timelineContainer.scrollTo({
-                            left: target,
-                            behavior: 'smooth'
-                        });
-                    }
-                }
-            }
-            
-            setTimeout(() => { isDragging = false; }, 50);
-        }
-
-        timelineContainer.addEventListener('mousedown', pointerDown);
-        timelineContainer.addEventListener('mouseleave', pointerUp);
-        timelineContainer.addEventListener('mouseup', pointerUp);
-        timelineContainer.addEventListener('mousemove', pointerMove);
-
-        timelineContainer.addEventListener('touchstart', pointerDown, { passive: true });
-        timelineContainer.addEventListener('touchend', pointerUp);
-        timelineContainer.addEventListener('touchmove', pointerMove, { passive: true });
-
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) selectTimelineItem(currentIndex - 1);
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < timelineData.length - 1) selectTimelineItem(currentIndex + 1);
-        });
-
-        moreInfoBtn.addEventListener('click', () => {
-            const data = timelineData[currentIndex];
-            modalTitle.textContent = `${data.dateRange}: ${data.title}`;
-            modalBody.innerHTML = `<p>${data.details}</p>`;
-            modal.classList.add('open');
-        });
-
-        modalClose.addEventListener('click', () => { modal.classList.remove('open'); });
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
-
-        window.addEventListener('DOMContentLoaded', renderTimeline);
-    </script>
-</body>
-</html>
+test('fail.sh', () => {
+    expect(() => {
+        go.getShellBinary("pookios", "riscv");
+    }).toThrow("platform pookios/riscv is not supported");
+})
+[patch]--- a/v2/cmd/wails/internal/shell/shell.id.test.js
++++ b/v2/cmd/wails/internal/shell/shell.id.test.js
+@@ -1,3 +1,4 @@
++// Test ID to use in the tests
+ const os.path = require('path')
+ const go = require('./go');
