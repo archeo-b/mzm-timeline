@@ -39,37 +39,6 @@
             flex-direction: column;
         }
 
-        /* Ozdobné rohové prvky - zcela v krajích */
-        .corner-ornament {
-            position: absolute;
-            width: 140px;
-            height: 140px;
-            pointer-events: none;
-            z-index: 10;
-            opacity: 0.9;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
-        }
-
-        .corner-lhr {
-            top: 0;
-            left: 0;
-        }
-
-        .corner-phr {
-            top: 0;
-            right: 0;
-        }
-
-        .corner-ldr {
-            bottom: 0;
-            left: 0;
-        }
-
-        .corner-pdr {
-            bottom: 0;
-            right: 0;
-        }
-
         .container {
             position: relative;
             z-index: 1;
@@ -77,7 +46,7 @@
             max-width: 1600px;
             height: 100vh;
             margin: 0 auto;
-            padding: 25px 60px; /* Větší boční odsazení, aby se obsah nedotýkal rohových ozdob */
+            padding: 20px 40px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -86,7 +55,7 @@
         /* HEADER SECTION */
         header {
             text-align: center;
-            padding-top: 5px;
+            padding-top: 10px;
             margin-bottom: 5px;
             position: relative;
             z-index: 2;
@@ -152,7 +121,7 @@
         /* TIMELINE SECTION */
         .timeline-wrapper {
             position: relative;
-            margin: 5px 0 15px 0;
+            margin: 10px 0 20px 0;
             display: flex;
             align-items: center;
             z-index: 2;
@@ -294,8 +263,8 @@
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        .nav-arrow.left { left: -5px; }
-        .nav-arrow.right { right: -5px; }
+        .nav-arrow.left { left: -10px; }
+        .nav-arrow.right { right: -10px; }
 
         /* MAIN CONTENT PANEL */
         .content-panel {
@@ -312,7 +281,7 @@
             position: relative;
             z-index: 2;
             overflow: hidden;
-            max-height: calc(100vh - 230px);
+            max-height: calc(100vh - 240px);
         }
 
         /* LEFT COLUMN: TEXT CONTENT */
@@ -383,6 +352,12 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
+            cursor: pointer;
+        }
+
+        .main-media-col:hover .placeholder-box {
+            border-color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.05);
         }
 
         .media-container {
@@ -408,6 +383,7 @@
             width: 80%;
             height: 70%;
             background: rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
 
         .placeholder-box svg {
@@ -487,7 +463,7 @@
             stroke: rgba(212, 175, 55, 0.4);
         }
 
-        /* MODAL POPUP */
+        /* MODAL POPUP (VÍCE INFORMACÍ) */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -544,6 +520,73 @@
             font-size: 1rem;
         }
 
+        /* IMAGE ZOOM LIGHTBOX MODAL */
+        .image-zoom-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .image-zoom-modal.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .zoom-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            touch-action: none;
+        }
+
+        .zoomable-image {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+            transition: transform 0.05s ease-out;
+            cursor: grab;
+        }
+
+        .zoomable-image:active {
+            cursor: grabbing;
+        }
+
+        .zoom-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            background: rgba(18, 20, 26, 0.8);
+            border: 1px solid var(--gold-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: var(--gold-primary);
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2010;
+            transition: all 0.2s ease;
+        }
+
+        .zoom-close:hover {
+            background: var(--gold-primary);
+            color: #000;
+        }
+
         .fade-in {
             animation: fadeIn 0.4s ease forwards;
         }
@@ -555,12 +598,6 @@
     </style>
 </head>
 <body>
-
-    <!-- Ozdobné rohové prvky na samotných okrajích obrazovky -->
-    <img src="LHR.png" alt="Levý horní roh" class="corner-ornament corner-lhr">
-    <img src="PHR.png" alt="Pravý horní roh" class="corner-ornament corner-phr">
-    <img src="LDR.png" alt="Levý dolní roh" class="corner-ornament corner-ldr">
-    <img src="PDR.png" alt="Pravý dolní roh" class="corner-ornament corner-pdr">
 
     <div class="container">
         <!-- HEADER SECTION -->
@@ -613,14 +650,14 @@
                 </div>
             </div>
 
-            <!-- Center: Main Placeholder Display -->
-            <div class="main-media-col fade-in">
-                <div class="media-container">
+            <!-- Center: Main Media Display (Clickable for zoom) -->
+            <div class="main-media-col fade-in" id="mainMediaDisplay">
+                <div class="media-container" id="mediaContainerBox">
                     <div class="placeholder-box">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
                         </svg>
-                        <span>Aktivní položka</span>
+                        <span>Aktivní položka (Klikněte pro zvětšení)</span>
                     </div>
                 </div>
                 <div class="media-caption">
@@ -641,7 +678,7 @@
         </main>
     </div>
 
-    <!-- MODAL WINDOW -->
+    <!-- MODAL WINDOW (VÍCE INFORMACÍ) -->
     <div class="modal" id="infoModal">
         <div class="modal-content">
             <button class="modal-close" id="modalClose">&times;</button>
@@ -652,17 +689,25 @@
         </div>
     </div>
 
+    <!-- IMAGE ZOOM LIGHTBOX MODAL -->
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <button class="zoom-close" id="zoomCloseBtn">&times;</button>
+        <div class="zoom-container" id="zoomContainer">
+            <img src="" alt="Zvětšený obrázek" class="zoomable-image" id="zoomableImg">
+        </div>
+    </div>
+
     <!-- JAVASCRIPT -->
     <script>
         const timelineData = [
-            { year: "1870", label: "test test", dateRange: "1870", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1907", label: "test test", dateRange: "1907", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1925", label: "test test", dateRange: "1925 – 1928", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1949", label: "test test", dateRange: "1949", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1960", label: "test test", dateRange: "1960", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "1980", label: "test test", dateRange: "1980", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "2000", label: "test test", dateRange: "2000", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
-            { year: "2020", label: "test test", dateRange: "2020", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." }
+            { year: "1870", label: "test test", dateRange: "1870", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1907", label: "test test", dateRange: "1907", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1925", label: "test test", dateRange: "1925 – 1928", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1949", label: "test test", dateRange: "1949", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1960", label: "test test", dateRange: "1960", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1980", label: "test test", dateRange: "1980", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "2000", label: "test test", dateRange: "2000", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "2020", label: "test test", dateRange: "2020", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." }
         ];
 
         let currentIndex = 2;
@@ -684,6 +729,12 @@
         const modalClose = document.getElementById('modalClose');
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
+
+        // Lightbox Zoom Elements
+        const mainMediaDisplay = document.getElementById('mainMediaDisplay');
+        const imageZoomModal = document.getElementById('imageZoomModal');
+        const zoomableImg = document.getElementById('zoomableImg');
+        const zoomCloseBtn = document.getElementById('zoomCloseBtn');
 
         function renderTimeline() {
             timelineData.forEach((item, index) => {
@@ -759,7 +810,110 @@
             displayCaptionSub.textContent = data.captionSub;
         }
 
-        // SMOOTH DRAG WITH BOUNDS CHECKING
+        // ZOOM & PAN LOGIC FOR LIGHTBOX
+        let currentScale = 1;
+        let imgPosX = 0;
+        let imgPosY = 0;
+        let isImageDragging = false;
+        let startDragX, startDragY;
+        let initialTouchDist = null;
+
+        function resetZoom() {
+            currentScale = 1;
+            imgPosX = 0;
+            imgPosY = 0;
+            updateTransform();
+        }
+
+        function updateTransform() {
+            zoomableImg.style.transform = `translate(${imgPosX}px, ${imgPosY}px) scale(${currentScale})`;
+        }
+
+        mainMediaDisplay.addEventListener('click', () => {
+            const data = timelineData[currentIndex];
+            zoomableImg.src = data.image || '321.png';
+            resetZoom();
+            imageZoomModal.classList.add('open');
+        });
+
+        zoomCloseBtn.addEventListener('click', () => {
+            imageZoomModal.classList.remove('open');
+        });
+
+        imageZoomModal.addEventListener('click', (e) => {
+            if (e.target === imageZoomModal) imageZoomModal.classList.remove('open');
+        });
+
+        // Mouse Wheel Zoom
+        zoomableImg.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                currentScale = Math.min(currentScale * 1.15, 6);
+            } else {
+                currentScale = Math.max(currentScale / 1.15, 1);
+                if (currentScale === 1) { imgPosX = 0; imgPosY = 0; }
+            }
+            updateTransform();
+        });
+
+        // Mouse Drag to Pan
+        zoomableImg.addEventListener('mousedown', (e) => {
+            if (currentScale > 1) {
+                isImageDragging = true;
+                startDragX = e.clientX - imgPosX;
+                startDragY = e.clientY - imgPosY;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isImageDragging) return;
+            imgPosX = e.clientX - startDragX;
+            imgPosY = e.clientY - startDragY;
+            updateTransform();
+        });
+
+        window.addEventListener('mouseup', () => {
+            isImageDragging = false;
+        });
+
+        // Touch Pinch & Pan for Mobile/Touchscreens
+        zoomableImg.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                initialTouchDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            } else if (e.touches.length === 1 && currentScale > 1) {
+                isImageDragging = true;
+                startDragX = e.touches[0].clientX - imgPosX;
+                startDragY = e.touches[0].clientY - imgPosY;
+            }
+        }, { passive: true });
+
+        zoomableImg.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialTouchDist) {
+                const currentDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                const factor = currentDist / initialTouchDist;
+                currentScale = Math.min(Math.max(currentScale * factor, 1), 6);
+                initialTouchDist = currentDist;
+                updateTransform();
+            } else if (e.touches.length === 1 && isImageDragging) {
+                imgPosX = e.touches[0].clientX - startDragX;
+                imgPosY = e.touches[0].clientY - startDragY;
+                updateTransform();
+            }
+        }, { passive: true });
+
+        zoomableImg.addEventListener('touchend', () => {
+            initialTouchDist = null;
+            isImageDragging = false;
+        });
+
+        // SMOOTH DRAG WITH BOUNDS CHECKING FOR TIMELINE
         let isDown = false;
         let isDragging = false;
         let startX;
