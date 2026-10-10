@@ -39,27 +39,25 @@
             flex-direction: column;
         }
 
-        /* Celoplošné nedominantní pozadí z obrázku 321.png */
-        body::before {
-            content: '';
+        /* Celoplošné pozadí s obrázkem 321.png (vodoznak / textura) */
+        .bg-wallpaper {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background-image: url('321.png');
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
-            opacity: 0.08; /* Jemná nevtíravá průhlednost */
-            filter: blur(3px); /* Lehké rozostření do hloubky */
+            opacity: 0.12;
+            filter: blur(2px);
             pointer-events: none;
             z-index: 0;
         }
 
-        /* Tmavá krycí vrstva pro zajištění kontrastu a čitelnosti */
-        body::after {
-            content: '';
+        /* Tmavý filtr pro zajištění kontrastu a čitelnosti */
+        .bg-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 50% 30%, rgba(10, 12, 16, 0.75) 0%, rgba(10, 12, 16, 0.95) 80%);
+            background: radial-gradient(circle at 50% 30%, rgba(10, 12, 16, 0.7) 0%, rgba(10, 12, 16, 0.95) 85%);
             pointer-events: none;
             z-index: 0;
         }
@@ -134,14 +132,13 @@
             font-weight: 600;
         }
 
-        .title-timeline-heading {
-            font-family: 'Cinzel', serif;
-            font-size: 1.15rem;
-            letter-spacing: 4px;
-            color: var(--text-bright);
-            text-transform: uppercase;
+        .title-desc {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            letter-spacing: 1px;
             margin-top: 2px;
-            font-weight: 600;
         }
 
         /* TIMELINE SECTION */
@@ -551,6 +548,10 @@
 </head>
 <body>
 
+    <!-- Pozadí (321.png jako celoplošný vodoznak) -->
+    <div class="bg-wallpaper"></div>
+    <div class="bg-overlay"></div>
+
     <div class="container">
         <!-- HEADER SECTION -->
         <header id="appHeader">
@@ -558,11 +559,11 @@
                 <div class="title-text-group">
                     <h1 class="title-main">STARÉ HRADISKO</h1>
                     <div class="title-sub">KELTSKÉ OPPIDUM</div>
-                    <div class="title-timeline-heading">HISTORIE VÝZKUMŮ V ČASE</div>
                 </div>
                 <!-- 123.png v záhlaví -->
                 <img src="123.png" alt="123.png" class="artifact-header-img">
             </div>
+            <div class="title-desc">Lidé. Výzkumy. Objevy. Příběh, který stále pokračuje.</div>
         </header>
 
         <!-- TIMELINE SECTION -->
