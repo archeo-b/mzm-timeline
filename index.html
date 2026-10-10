@@ -85,7 +85,6 @@
         .artifact-header-img {
             height: 85px;
             width: auto;
-            /* Záře odstraněna, ponechán pouze jemný stín pro oddělení od pozadí */
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
             transition: transform 0.4s ease;
             cursor: pointer;
@@ -144,11 +143,12 @@
         .timeline-container {
             width: 100%;
             overflow-x: auto;
-            scroll-behavior: smooth;
+            scroll-behavior: auto; /* Změněno na auto pro plynulý JS drag */
             scrollbar-width: none;
             -ms-overflow-style: none;
             cursor: grab;
             padding: 15px 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .timeline-container::-webkit-scrollbar {
@@ -541,8 +541,8 @@
         <!-- HEADER SECTION -->
         <header id="appHeader">
             <div class="header-brand-container">
-                <!-- Levý artefakt (321.jpg) -->
-                <img src="321.jpg" alt="Keltský plech s tvářemi" class="artifact-header-img" title="Plech s vy tepanými tvářemi">
+                <!-- Levý artefakt (321.png) bez popisku -->
+                <img src="321.png" alt="321.png" class="artifact-header-img">
                 
                 <div class="title-text-group">
                     <h1 class="title-main">STARÉ HRADISKO</h1>
@@ -550,8 +550,8 @@
                     <div class="title-timeline-heading">HISTORIE VÝZKUMŮ V ČASE</div>
                 </div>
 
-                <!-- Pravý artefakt (123.jpg) -->
-                <img src="123.png" alt="Keltská figurka koníka" class="artifact-header-img" title="Bronzová figurka ze Starého Hradiska">
+                <!-- Pravý artefakt (123.png) bez popisku -->
+                <img src="123.png" alt="123.png" class="artifact-header-img">
             </div>
         </header>
 
@@ -676,7 +676,9 @@
                     <div class="timeline-label">${item.label}</div>
                 `;
 
-                itemEl.addEventListener('click', () => {
+                itemEl.addEventListener('click', (e) => {
+                    // Prevent click triggering if user was dragging
+                    if (isDragging) return;
                     selectTimelineItem(index);
                 });
 
@@ -734,41 +736,68 @@
             displayCaptionSub.textContent = data.captionSub;
         }
 
+        // SMOOTH DRAG & MOMENTUM SCROLLING IMPLEMENTATION
         let isDown = false;
+        let isDragging = false;
         let startX;
         let scrollLeft;
+        let startTime;
+        let startScrollLeft;
 
-        timelineContainer.addEventListener('mousedown', (e) => {
+        function pointerDown(e) {
             isDown = true;
-            startX = e.pageX - timelineContainer.offsetLeft;
+            isDragging = false;
+            startX = e.pageX || e.touches[0].pageX;
             scrollLeft = timelineContainer.scrollLeft;
-        });
+            startTime = Date.now();
+            startScrollLeft = scrollLeft;
+        }
 
-        timelineContainer.addEventListener('mouseleave', () => { isDown = false; });
-        timelineContainer.addEventListener('mouseup', () => { isDown = false; });
+        function pointerMove(e) {
+            if (!isDown) return;
+            const x = e.pageX || e.touches[0].pageX;
+            const walk = (x - startX);
+            
+            if (Math.abs(walk) > 5) {
+                isDragging = true;
+            }
 
-        timelineContainer.addEventListener('mousemove', (e) => {
-            if(!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - timelineContainer.offsetLeft;
-            const walk = (x - startX) * 1.5;
-            timelineContainer.scrollLeft = scrollLeft - walk;
-        });
+            if (isDragging) {
+                timelineContainer.scrollLeft = scrollLeft - walk;
+            }
+        }
 
-        timelineContainer.addEventListener('touchstart', (e) => {
-            isDown = true;
-            startX = e.touches[0].pageX - timelineContainer.offsetLeft;
-            scrollLeft = timelineContainer.scrollLeft;
-        });
+        function pointerUp() {
+            if (!isDown) return;
+            isDown = false;
 
-        timelineContainer.addEventListener('touchend', () => { isDown = false; });
+            if (isDragging) {
+                const elapsedTime = Date.now() - startTime;
+                const distance = timelineContainer.scrollLeft - startScrollLeft;
+                
+                // Add smooth momentum effect on release if dragged quickly
+                if (elapsedTime < 300 && Math.abs(distance) > 10) {
+                    const speed = distance / elapsedTime;
+                    const momentum = speed * 150;
+                    timelineContainer.scrollTo({
+                        left: timelineContainer.scrollLeft + momentum,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+            
+            // Reset drag flag after short delay so clicks don't fire immediately after drag
+            setTimeout(() => { isDragging = false; }, 50);
+        }
 
-        timelineContainer.addEventListener('touchmove', (e) => {
-            if(!isDown) return;
-            const x = e.touches[0].pageX - timelineContainer.offsetLeft;
-            const walk = (x - startX) * 1.5;
-            timelineContainer.scrollLeft = scrollLeft - walk;
-        });
+        timelineContainer.addEventListener('mousedown', pointerDown);
+        timelineContainer.addEventListener('mouseleave', pointerUp);
+        timelineContainer.addEventListener('mouseup', pointerUp);
+        timelineContainer.addEventListener('mousemove', pointerMove);
+
+        timelineContainer.addEventListener('touchstart', pointerDown, { passive: true });
+        timelineContainer.addEventListener('touchend', pointerUp);
+        timelineContainer.addEventListener('touchmove', pointerMove, { passive: true });
 
         prevBtn.addEventListener('click', () => {
             if (currentIndex > 0) selectTimelineItem(currentIndex - 1);
