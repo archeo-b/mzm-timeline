@@ -44,7 +44,6 @@
             flex-direction: column;
         }
 
-        /* Ambient light effect on background */
         body::before {
             content: '';
             position: absolute;
@@ -67,11 +66,11 @@
             justify-content: space-between;
         }
 
-        /* HEADER SECTION WITH EMBEDDED ARTIFACT */
+        /* HEADER SECTION */
         header {
             text-align: center;
             padding-top: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             position: relative;
         }
 
@@ -79,21 +78,21 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 25px;
+            gap: 30px;
             position: relative;
         }
 
         .artifact-header-img {
             height: 85px;
             width: auto;
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.35)) drop-shadow(0 5px 10px rgba(0,0,0,0.8));
-            transition: transform 0.4s ease, filter 0.4s ease;
+            /* Záře odstraněna, ponechán pouze jemný stín pro oddělení od pozadí */
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+            transition: transform 0.4s ease;
             cursor: pointer;
         }
 
         .artifact-header-img:hover {
-            transform: scale(1.08) rotate(2deg);
-            filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.6)) drop-shadow(0 8px 15px rgba(0,0,0,0.9));
+            transform: scale(1.06);
         }
 
         .title-text-group {
@@ -104,7 +103,7 @@
 
         .title-main {
             font-family: 'Cinzel', serif;
-            font-size: 2.8rem;
+            font-size: 2.6rem;
             font-weight: 700;
             letter-spacing: 6px;
             color: var(--text-bright);
@@ -116,26 +115,28 @@
 
         .title-sub {
             font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
+            font-size: 1rem;
             letter-spacing: 10px;
             color: var(--gold-primary);
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
-        .title-desc {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: 1rem;
-            letter-spacing: 1px;
+        .title-timeline-heading {
+            font-family: 'Cinzel', serif;
+            font-size: 1.15rem;
+            letter-spacing: 4px;
+            color: var(--text-bright);
+            text-transform: uppercase;
+            margin-top: 2px;
+            font-weight: 600;
         }
 
         /* TIMELINE SECTION */
         .timeline-wrapper {
             position: relative;
-            margin: 15px 0 25px 0;
+            margin: 10px 0 20px 0;
             display: flex;
             align-items: center;
         }
@@ -144,14 +145,14 @@
             width: 100%;
             overflow-x: auto;
             scroll-behavior: smooth;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
             cursor: grab;
-            padding: 20px 0;
+            padding: 15px 0;
         }
 
         .timeline-container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
         }
 
         .timeline-container:active {
@@ -163,10 +164,9 @@
             align-items: center;
             position: relative;
             min-width: max-content;
-            padding: 0 50vw; /* Allows center scrolling for all items */
+            padding: 0 50vw;
         }
 
-        /* Continuous line running behind items */
         .timeline-line {
             position: absolute;
             top: 28px;
@@ -224,7 +224,6 @@
             font-weight: 500;
         }
 
-        /* Hover & Active States */
         .timeline-item:hover .timeline-year {
             color: var(--text-bright);
         }
@@ -294,7 +293,7 @@
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
-            max-height: calc(100vh - 250px);
+            max-height: calc(100vh - 240px);
         }
 
         /* LEFT COLUMN: TEXT CONTENT */
@@ -329,26 +328,6 @@
             color: #cbd5e1;
             margin-bottom: 20px;
             font-weight: 300;
-        }
-
-        .quote-box {
-            border-left: 2px solid var(--gold-primary);
-            padding-left: 15px;
-            margin-bottom: 25px;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: var(--gold-light);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .quote-author {
-            display: block;
-            margin-top: 6px;
-            font-family: 'Montserrat', sans-serif;
-            font-style: normal;
-            font-size: 0.8rem;
-            color: var(--text-muted);
         }
 
         .btn-more {
@@ -546,7 +525,6 @@
             font-size: 1rem;
         }
 
-        /* ANIMATIONS */
         .fade-in {
             animation: fadeIn 0.4s ease forwards;
         }
@@ -560,17 +538,21 @@
 <body>
 
     <div class="container">
-        <!-- HEADER SECTION WITH ARTIFACT IMAGE -->
+        <!-- HEADER SECTION -->
         <header id="appHeader">
             <div class="header-brand-container">
+                <!-- Levý artefakt (321.jpg) -->
+                <img src="321.jpg" alt="Keltský plech s tvářemi" class="artifact-header-img" title="Plech s vy tepanými tvářemi">
+                
                 <div class="title-text-group">
                     <h1 class="title-main">STARÉ HRADISKO</h1>
                     <div class="title-sub">KELTSKÉ OPPIDUM</div>
+                    <div class="title-timeline-heading">HISTORIE VÝZKUMŮ V ČASE</div>
                 </div>
-                <!-- Keltský koník / zvířátko vedle nadpisu -->
-                <img src="123.png" alt="Keltská figurka Staré Hradisko" class="artifact-header-img" title="Bronzová figurka ze Starého Hradiska">
+
+                <!-- Pravý artefakt (123.jpg) -->
+                <img src="123.png" alt="Keltská figurka koníka" class="artifact-header-img" title="Bronzová figurka ze Starého Hradiska">
             </div>
-            <div class="title-desc">test test test test test test test</div>
         </header>
 
         <!-- TIMELINE SECTION -->
@@ -582,7 +564,6 @@
             <div class="timeline-container" id="timelineContainer">
                 <div class="timeline-track" id="timelineTrack">
                     <div class="timeline-line"></div>
-                    <!-- Items populated dynamically by JS -->
                 </div>
             </div>
 
@@ -604,11 +585,6 @@
                 </div>
                 
                 <div>
-                    <div class="quote-box" id="quoteBox">
-                        "<span id="displayQuote">test test test test test test</span>"
-                        <span class="quote-author" id="displayAuthor">— test test</span>
-                    </div>
-
                     <button class="btn-more" id="moreInfoBtn">
                         VÍCE INFORMACÍ
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -634,54 +610,12 @@
 
             <!-- Right: Secondary Placeholders Grid -->
             <div class="gallery-grid-col fade-in">
-                <div class="grid-item">
-                    <div class="grid-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
-                        </svg>
-                        <span>test</span>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <div class="grid-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
-                        </svg>
-                        <span>test</span>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <div class="grid-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
-                        </svg>
-                        <span>test</span>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <div class="grid-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
-                        </svg>
-                        <span>test</span>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <div class="grid-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
-                        </svg>
-                        <span>test</span>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <div class="grid-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
-                        </svg>
-                        <span>test</span>
-                    </div>
-                </div>
+                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
+                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
+                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
+                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
+                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
+                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
             </div>
         </main>
     </div>
@@ -699,116 +633,24 @@
 
     <!-- JAVASCRIPT -->
     <script>
-        // DATA STRUCTURE WITH NEUTRAL TEST TEXTS
         const timelineData = [
-            {
-                year: "1870",
-                label: "test test",
-                dateRange: "1870",
-                title: "test test test",
-                desc: "test test test test test test test test test test test test test test test test test test test test.",
-                quote: "test test test test test test",
-                author: "test test",
-                captionTitle: "test test test",
-                captionSub: "test test test",
-                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
-            },
-            {
-                year: "1907",
-                label: "test test",
-                dateRange: "1907",
-                title: "test test test",
-                desc: "test test test test test test test test test test test test test test test test test test test test.",
-                quote: "test test test test test test",
-                author: "test test",
-                captionTitle: "test test test",
-                captionSub: "test test test",
-                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
-            },
-            {
-                year: "1925",
-                label: "test test",
-                dateRange: "1925 – 1928",
-                title: "test test test",
-                desc: "test test test test test test test test test test test test test test test test test test test test.",
-                quote: "test test test test test test",
-                author: "test test",
-                captionTitle: "test test test",
-                captionSub: "test test test",
-                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
-            },
-            {
-                year: "1949",
-                label: "test test",
-                dateRange: "1949",
-                title: "test test test",
-                desc: "test test test test test test test test test test test test test test test test test test test test.",
-                quote: "test test test test test test",
-                author: "test test",
-                captionTitle: "test test test",
-                captionSub: "test test test",
-                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
-            },
-            {
-                year: "1960",
-                label: "test test",
-                dateRange: "1960",
-                title: "test test test",
-                desc: "test test test test test test test test test test test test test test test test test test test test.",
-                quote: "test test test test test test",
-                author: "test test",
-                captionTitle: "test test test",
-                captionSub: "test test test",
-                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
-            },
-            {
-                year: "1980",
-                label: "test test",
-                dateRange: "1980",
-                title: "test test test",
-                desc: "test test test test test test test test test test test test test test test test test test test test.",
-                quote: "test test test test test test",
-                author: "test test",
-                captionTitle: "test test test",
-                captionSub: "test test test",
-                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
-            },
-            {
-                year: "2000",
-                label: "test test",
-                dateRange: "2000",
-                title: "test test test",
-                desc: "test test test test test test test test test test test test test test test test test test test test.",
-                quote: "test test test test test test",
-                author: "test test",
-                captionTitle: "test test test",
-                captionSub: "test test test",
-                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
-            },
-            {
-                year: "2020",
-                label: "test test",
-                dateRange: "2020",
-                title: "test test test",
-                desc: "test test test test test test test test test test test test test test test test test test test test.",
-                quote: "test test test test test test",
-                author: "test test",
-                captionTitle: "test test test",
-                captionSub: "test test test",
-                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
-            }
+            { year: "1870", label: "test test", dateRange: "1870", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1907", label: "test test", dateRange: "1907", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1925", label: "test test", dateRange: "1925 – 1928", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1949", label: "test test", dateRange: "1949", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1960", label: "test test", dateRange: "1960", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "1980", label: "test test", dateRange: "1980", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "2000", label: "test test", dateRange: "2000", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." },
+            { year: "2020", label: "test test", dateRange: "2020", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test." }
         ];
 
-        let currentIndex = 2; // Default starting at 1925
+        let currentIndex = 2;
 
-        // DOM ELEMENTS
         const timelineTrack = document.getElementById('timelineTrack');
         const timelineContainer = document.getElementById('timelineContainer');
         const displayDate = document.getElementById('displayDate');
         const displayTitle = document.getElementById('displayTitle');
         const displayDesc = document.getElementById('displayDesc');
-        const displayQuote = document.getElementById('displayQuote');
-        const displayAuthor = document.getElementById('displayAuthor');
         const displayCaptionTitle = document.getElementById('displayCaptionTitle');
         const displayCaptionSub = document.getElementById('displayCaptionSub');
         const contentPanel = document.getElementById('contentPanel');
@@ -822,7 +664,6 @@
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
 
-        // INITIALIZE TIMELINE DOM
         function renderTimeline() {
             timelineData.forEach((item, index) => {
                 const itemEl = document.createElement('div');
@@ -846,13 +687,10 @@
             setTimeout(() => centerActiveItem(), 100);
         }
 
-        // SELECT ITEM & UPDATE DISPLAY
         function selectTimelineItem(index) {
             if (index < 0 || index >= timelineData.length) return;
-            
             currentIndex = index;
 
-            // Update Active Class in Timeline
             document.querySelectorAll('.timeline-item').forEach((el, idx) => {
                 if (idx === currentIndex) {
                     el.classList.add('active');
@@ -865,7 +703,6 @@
             updateContent(currentIndex);
         }
 
-        // CENTER ACTIVE TIMELINE NODE
         function centerActiveItem() {
             const activeEl = document.querySelectorAll('.timeline-item')[currentIndex];
             if (!activeEl) return;
@@ -873,7 +710,6 @@
             const containerWidth = timelineContainer.offsetWidth;
             const itemLeft = activeEl.offsetLeft;
             const itemWidth = activeEl.offsetWidth;
-
             const targetScrollLeft = itemLeft - (containerWidth / 2) + (itemWidth / 2);
 
             timelineContainer.scrollTo({
@@ -882,26 +718,22 @@
             });
         }
 
-        // UPDATE PANEL CONTENT WITH ANIMATION
         function updateContent(index) {
             const data = timelineData[index];
 
             contentPanel.querySelectorAll('.fade-in').forEach(el => {
                 el.style.animation = 'none';
-                el.offsetHeight; // trigger reflow
+                el.offsetHeight;
                 el.style.animation = 'fadeIn 0.4s ease forwards';
             });
 
             displayDate.textContent = data.dateRange;
             displayTitle.textContent = data.title;
             displayDesc.textContent = data.desc;
-            displayQuote.textContent = data.quote;
-            displayAuthor.textContent = `— ${data.author}`;
             displayCaptionTitle.textContent = data.captionTitle;
             displayCaptionSub.textContent = data.captionSub;
         }
 
-        // DRAG & SWIPE FUNCTIONALITY FOR TOUCH/MOUSE
         let isDown = false;
         let startX;
         let scrollLeft;
@@ -912,13 +744,8 @@
             scrollLeft = timelineContainer.scrollLeft;
         });
 
-        timelineContainer.addEventListener('mouseleave', () => {
-            isDown = false;
-        });
-
-        timelineContainer.addEventListener('mouseup', () => {
-            isDown = false;
-        });
+        timelineContainer.addEventListener('mouseleave', () => { isDown = false; });
+        timelineContainer.addEventListener('mouseup', () => { isDown = false; });
 
         timelineContainer.addEventListener('mousemove', (e) => {
             if(!isDown) return;
@@ -928,16 +755,13 @@
             timelineContainer.scrollLeft = scrollLeft - walk;
         });
 
-        // Touch support for drag
         timelineContainer.addEventListener('touchstart', (e) => {
             isDown = true;
             startX = e.touches[0].pageX - timelineContainer.offsetLeft;
             scrollLeft = timelineContainer.scrollLeft;
         });
 
-        timelineContainer.addEventListener('touchend', () => {
-            isDown = false;
-        });
+        timelineContainer.addEventListener('touchend', () => { isDown = false; });
 
         timelineContainer.addEventListener('touchmove', (e) => {
             if(!isDown) return;
@@ -946,7 +770,6 @@
             timelineContainer.scrollLeft = scrollLeft - walk;
         });
 
-        // ARROW NAVIGATION
         prevBtn.addEventListener('click', () => {
             if (currentIndex > 0) selectTimelineItem(currentIndex - 1);
         });
@@ -955,7 +778,6 @@
             if (currentIndex < timelineData.length - 1) selectTimelineItem(currentIndex + 1);
         });
 
-        // MODAL HANDLERS
         moreInfoBtn.addEventListener('click', () => {
             const data = timelineData[currentIndex];
             modalTitle.textContent = `${data.dateRange}: ${data.title}`;
@@ -963,15 +785,9 @@
             modal.classList.add('open');
         });
 
-        modalClose.addEventListener('click', () => {
-            modal.classList.remove('open');
-        });
+        modalClose.addEventListener('click', () => { modal.classList.remove('open'); });
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.remove('open');
-        });
-
-        // INITIALIZE ON LOAD
         window.addEventListener('DOMContentLoaded', renderTimeline);
     </script>
 </body>
