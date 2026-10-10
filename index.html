@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Interaktivní časová osa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0c10;
+            --panel-bg: rgba(18, 20, 26, 0.85);
+            --panel-border: rgba(212, 175, 55, 0.25);
+            --gold-primary: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-dark: #997a15;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --text-bright: #ffffff;
+            --accent-glow: rgba(212, 175, 55, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 50% 30%, rgba(30, 35, 45, 0.6) 0%, rgba(10, 12, 16, 0.95) 70%),
+                linear-gradient(to bottom, rgba(10,12,16,0.4), rgba(10,12,16,0.9));
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Ambient light effect on background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 50% 15%, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1600px;
+            height: 100vh;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* HEADER SECTION WITH EMBEDDED ARTIFACT */
+        header {
+            text-align: center;
+            padding-top: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .header-brand-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            position: relative;
+        }
+
+        .artifact-header-img {
+            height: 85px;
+            width: auto;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.35)) drop-shadow(0 5px 10px rgba(0,0,0,0.8));
+            transition: transform 0.4s ease, filter 0.4s ease;
+            cursor: pointer;
+        }
+
+        .artifact-header-img:hover {
+            transform: scale(1.08) rotate(2deg);
+            filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.6)) drop-shadow(0 8px 15px rgba(0,0,0,0.9));
+        }
+
+        .title-text-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title-main {
+            font-family: 'Cinzel', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: var(--text-bright);
+            text-transform: uppercase;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.2);
+            margin-bottom: 2px;
+            line-height: 1.1;
+        }
+
+        .title-sub {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            letter-spacing: 10px;
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .title-desc {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        /* TIMELINE SECTION */
+        .timeline-wrapper {
+            position: relative;
+            margin: 15px 0 25px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .timeline-container {
+            width: 100%;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* IE and Edge */
+            cursor: grab;
+            padding: 20px 0;
+        }
+
+        .timeline-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .timeline-container:active {
+            cursor: grabbing;
+        }
+
+        .timeline-track {
+            display: flex;
+            align-items: center;
+            position: relative;
+            min-width: max-content;
+            padding: 0 50vw; /* Allows center scrolling for all items */
+        }
+
+        /* Continuous line running behind items */
+        .timeline-line {
+            position: absolute;
+            top: 28px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(212,175,55,0.1) 0%, 
+                rgba(212,175,55,0.5) 15%, 
+                rgba(212,175,55,0.5) 85%, 
+                rgba(212,175,55,0.1) 100%);
+            z-index: 1;
+        }
+
+        .timeline-item {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 140px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .timeline-year {
+            font-family: 'Cinzel', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-node {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--bg-dark);
+            border: 2px solid var(--text-muted);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .timeline-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        /* Hover & Active States */
+        .timeline-item:hover .timeline-year {
+            color: var(--text-bright);
+        }
+
+        .timeline-item:hover .timeline-node {
+            border-color: var(--gold-light);
+            box-shadow: 0 0 10px var(--gold-primary);
+        }
+
+        .timeline-item.active .timeline-year {
+            color: var(--gold-primary);
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .timeline-item.active .timeline-node {
+            background-color: var(--gold-primary);
+            border-color: #fff;
+            transform: scale(1.3);
+            box-shadow: 0 0 15px var(--gold-primary), 0 0 25px var(--gold-primary);
+        }
+
+        .timeline-item.active .timeline-label {
+            color: var(--gold-light);
+            font-weight: 600;
+        }
+
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(18, 20, 26, 0.8);
+            border: 1px solid var(--panel-border);
+            color: var(--gold-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-arrow:hover {
+            background: var(--gold-primary);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .nav-arrow.left { left: -10px; }
+        .nav-arrow.right { right: -10px; }
+
+        /* MAIN CONTENT PANEL */
+        .content-panel {
+            flex: 1;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr 0.7fr;
+            gap: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 100px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            max-height: calc(100vh - 250px);
+        }
+
+        /* LEFT COLUMN: TEXT CONTENT */
+        .text-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-right: 15px;
+        }
+
+        .period-date {
+            font-family: 'Cinzel', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 8px;
+            line-height: 1.1;
+        }
+
+        .period-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-bright);
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .period-description {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .quote-box {
+            border-left: 2px solid var(--gold-primary);
+            padding-left: 15px;
+            margin-bottom: 25px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--gold-light);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .quote-author {
+            display: block;
+            margin-top: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-style: normal;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .btn-more {
+            align-self: flex-start;
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-more:hover {
+            background: var(--gold-primary);
+            color: #000;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* CENTER COLUMN: MAIN DISPLAY / PLACEHOLDER */
+        .main-media-col {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .media-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 18, 24, 0.6);
+        }
+
+        .placeholder-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-muted);
+            border: 2px dashed rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            width: 80%;
+            height: 70%;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .placeholder-box svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--gold-dark);
+        }
+
+        .placeholder-box span {
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .media-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            font-size: 0.85rem;
+            color: #e2e8f0;
+        }
+
+        .media-caption-title {
+            font-weight: 600;
+            color: var(--gold-light);
+        }
+
+        .media-caption-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* RIGHT COLUMN: GALLERY GRID PLACEHOLDERS */
+        .gallery-grid-col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .grid-item {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(15, 18, 24, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .grid-item:hover {
+            border-color: var(--gold-primary);
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .grid-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .grid-placeholder svg {
+            width: 20px;
+            height: 20px;
+            stroke: rgba(212, 175, 55, 0.4);
+        }
+
+        /* MODAL POPUP */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            border: 1px solid var(--gold-primary);
+            border-radius: 12px;
+            width: 80%;
+            max-width: 800px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--gold-primary);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--gold-primary);
+            margin-bottom: 20px;
+        }
+
+        .modal-body {
+            line-height: 1.8;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        /* ANIMATIONS */
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER SECTION WITH ARTIFACT IMAGE -->
+        <header id="appHeader">
+            <div class="header-brand-container">
+                <div class="title-text-group">
+                    <h1 class="title-main">STARÉ HRADISKO</h1>
+                    <div class="title-sub">KELTSKÉ OPPIDUM</div>
+                </div>
+                <!-- Keltský koník / zvířátko vedle nadpisu -->
+                <img src="123.png" alt="Keltská figurka Staré Hradisko" class="artifact-header-img" title="Bronzová figurka ze Starého Hradiska">
+            </div>
+            <div class="title-desc">test test test test test test test</div>
+        </header>
+
+        <!-- TIMELINE SECTION -->
+        <div class="timeline-wrapper">
+            <button class="nav-arrow left" id="prevBtn" aria-label="Předchozí">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            
+            <div class="timeline-container" id="timelineContainer">
+                <div class="timeline-track" id="timelineTrack">
+                    <div class="timeline-line"></div>
+                    <!-- Items populated dynamically by JS -->
+                </div>
+            </div>
+
+            <button class="nav-arrow right" id="nextBtn" aria-label="Následující">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </div>
+
+        <!-- MAIN CONTENT PANEL -->
+        <main class="content-panel" id="contentPanel">
+            <!-- Left: Text -->
+            <div class="text-col fade-in">
+                <div>
+                    <div class="period-date" id="displayDate">1870</div>
+                    <h2 class="period-title" id="displayTitle">test test test</h2>
+                    <p class="period-description" id="displayDesc">
+                        test test test test test test test test test test test test test test test test test test test test.
+                    </p>
+                </div>
+                
+                <div>
+                    <div class="quote-box" id="quoteBox">
+                        "<span id="displayQuote">test test test test test test</span>"
+                        <span class="quote-author" id="displayAuthor">— test test</span>
+                    </div>
+
+                    <button class="btn-more" id="moreInfoBtn">
+                        VÍCE INFORMACÍ
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Center: Main Placeholder Display -->
+            <div class="main-media-col fade-in">
+                <div class="media-container">
+                    <div class="placeholder-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
+                        </svg>
+                        <span>Aktivní položka</span>
+                    </div>
+                </div>
+                <div class="media-caption">
+                    <div class="media-caption-title" id="displayCaptionTitle">test test test</div>
+                    <div class="media-caption-sub" id="displayCaptionSub">test test test</div>
+                </div>
+            </div>
+
+            <!-- Right: Secondary Placeholders Grid -->
+            <div class="gallery-grid-col fade-in">
+                <div class="grid-item">
+                    <div class="grid-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
+                        </svg>
+                        <span>test</span>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
+                        </svg>
+                        <span>test</span>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
+                        </svg>
+                        <span>test</span>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
+                        </svg>
+                        <span>test</span>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
+                        </svg>
+                        <span>test</span>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="grid-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
+                        </svg>
+                        <span>test</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL WINDOW -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <h2 class="modal-title" id="modalTitle">test test test</h2>
+            <div class="modal-body" id="modalBody">
+                <p>test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // DATA STRUCTURE WITH NEUTRAL TEST TEXTS
+        const timelineData = [
+            {
+                year: "1870",
+                label: "test test",
+                dateRange: "1870",
+                title: "test test test",
+                desc: "test test test test test test test test test test test test test test test test test test test test.",
+                quote: "test test test test test test",
+                author: "test test",
+                captionTitle: "test test test",
+                captionSub: "test test test",
+                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
+            },
+            {
+                year: "1907",
+                label: "test test",
+                dateRange: "1907",
+                title: "test test test",
+                desc: "test test test test test test test test test test test test test test test test test test test test.",
+                quote: "test test test test test test",
+                author: "test test",
+                captionTitle: "test test test",
+                captionSub: "test test test",
+                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
+            },
+            {
+                year: "1925",
+                label: "test test",
+                dateRange: "1925 – 1928",
+                title: "test test test",
+                desc: "test test test test test test test test test test test test test test test test test test test test.",
+                quote: "test test test test test test",
+                author: "test test",
+                captionTitle: "test test test",
+                captionSub: "test test test",
+                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
+            },
+            {
+                year: "1949",
+                label: "test test",
+                dateRange: "1949",
+                title: "test test test",
+                desc: "test test test test test test test test test test test test test test test test test test test test.",
+                quote: "test test test test test test",
+                author: "test test",
+                captionTitle: "test test test",
+                captionSub: "test test test",
+                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
+            },
+            {
+                year: "1960",
+                label: "test test",
+                dateRange: "1960",
+                title: "test test test",
+                desc: "test test test test test test test test test test test test test test test test test test test test.",
+                quote: "test test test test test test",
+                author: "test test",
+                captionTitle: "test test test",
+                captionSub: "test test test",
+                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
+            },
+            {
+                year: "1980",
+                label: "test test",
+                dateRange: "1980",
+                title: "test test test",
+                desc: "test test test test test test test test test test test test test test test test test test test test.",
+                quote: "test test test test test test",
+                author: "test test",
+                captionTitle: "test test test",
+                captionSub: "test test test",
+                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
+            },
+            {
+                year: "2000",
+                label: "test test",
+                dateRange: "2000",
+                title: "test test test",
+                desc: "test test test test test test test test test test test test test test test test test test test test.",
+                quote: "test test test test test test",
+                author: "test test",
+                captionTitle: "test test test",
+                captionSub: "test test test",
+                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
+            },
+            {
+                year: "2020",
+                label: "test test",
+                dateRange: "2020",
+                title: "test test test",
+                desc: "test test test test test test test test test test test test test test test test test test test test.",
+                quote: "test test test test test test",
+                author: "test test",
+                captionTitle: "test test test",
+                captionSub: "test test test",
+                details: "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test."
+            }
+        ];
+
+        let currentIndex = 2; // Default starting at 1925
+
+        // DOM ELEMENTS
+        const timelineTrack = document.getElementById('timelineTrack');
+        const timelineContainer = document.getElementById('timelineContainer');
+        const displayDate = document.getElementById('displayDate');
+        const displayTitle = document.getElementById('displayTitle');
+        const displayDesc = document.getElementById('displayDesc');
+        const displayQuote = document.getElementById('displayQuote');
+        const displayAuthor = document.getElementById('displayAuthor');
+        const displayCaptionTitle = document.getElementById('displayCaptionTitle');
+        const displayCaptionSub = document.getElementById('displayCaptionSub');
+        const contentPanel = document.getElementById('contentPanel');
+        
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const moreInfoBtn = document.getElementById('moreInfoBtn');
+        
+        const modal = document.getElementById('infoModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        // INITIALIZE TIMELINE DOM
+        function renderTimeline() {
+            timelineData.forEach((item, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = `timeline-item ${index === currentIndex ? 'active' : ''}`;
+                itemEl.dataset.index = index;
+                
+                itemEl.innerHTML = `
+                    <div class="timeline-year">${item.year}</div>
+                    <div class="timeline-node"></div>
+                    <div class="timeline-label">${item.label}</div>
+                `;
+
+                itemEl.addEventListener('click', () => {
+                    selectTimelineItem(index);
+                });
+
+                timelineTrack.appendChild(itemEl);
+            });
+
+            updateContent(currentIndex);
+            setTimeout(() => centerActiveItem(), 100);
+        }
+
+        // SELECT ITEM & UPDATE DISPLAY
+        function selectTimelineItem(index) {
+            if (index < 0 || index >= timelineData.length) return;
+            
+            currentIndex = index;
+
+            // Update Active Class in Timeline
+            document.querySelectorAll('.timeline-item').forEach((el, idx) => {
+                if (idx === currentIndex) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            centerActiveItem();
+            updateContent(currentIndex);
+        }
+
+        // CENTER ACTIVE TIMELINE NODE
+        function centerActiveItem() {
+            const activeEl = document.querySelectorAll('.timeline-item')[currentIndex];
+            if (!activeEl) return;
+
+            const containerWidth = timelineContainer.offsetWidth;
+            const itemLeft = activeEl.offsetLeft;
+            const itemWidth = activeEl.offsetWidth;
+
+            const targetScrollLeft = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+
+            timelineContainer.scrollTo({
+                left: targetScrollLeft,
+                behavior: 'smooth'
+            });
+        }
+
+        // UPDATE PANEL CONTENT WITH ANIMATION
+        function updateContent(index) {
+            const data = timelineData[index];
+
+            contentPanel.querySelectorAll('.fade-in').forEach(el => {
+                el.style.animation = 'none';
+                el.offsetHeight; // trigger reflow
+                el.style.animation = 'fadeIn 0.4s ease forwards';
+            });
+
+            displayDate.textContent = data.dateRange;
+            displayTitle.textContent = data.title;
+            displayDesc.textContent = data.desc;
+            displayQuote.textContent = data.quote;
+            displayAuthor.textContent = `— ${data.author}`;
+            displayCaptionTitle.textContent = data.captionTitle;
+            displayCaptionSub.textContent = data.captionSub;
+        }
+
+        // DRAG & SWIPE FUNCTIONALITY FOR TOUCH/MOUSE
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        timelineContainer.addEventListener('mousedown', (e) => {
+            isDown = true;
+            startX = e.pageX - timelineContainer.offsetLeft;
+            scrollLeft = timelineContainer.scrollLeft;
+        });
+
+        timelineContainer.addEventListener('mouseleave', () => {
+            isDown = false;
+        });
+
+        timelineContainer.addEventListener('mouseup', () => {
+            isDown = false;
+        });
+
+        timelineContainer.addEventListener('mousemove', (e) => {
+            if(!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - timelineContainer.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            timelineContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        // Touch support for drag
+        timelineContainer.addEventListener('touchstart', (e) => {
+            isDown = true;
+            startX = e.touches[0].pageX - timelineContainer.offsetLeft;
+            scrollLeft = timelineContainer.scrollLeft;
+        });
+
+        timelineContainer.addEventListener('touchend', () => {
+            isDown = false;
+        });
+
+        timelineContainer.addEventListener('touchmove', (e) => {
+            if(!isDown) return;
+            const x = e.touches[0].pageX - timelineContainer.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            timelineContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        // ARROW NAVIGATION
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) selectTimelineItem(currentIndex - 1);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < timelineData.length - 1) selectTimelineItem(currentIndex + 1);
+        });
+
+        // MODAL HANDLERS
+        moreInfoBtn.addEventListener('click', () => {
+            const data = timelineData[currentIndex];
+            modalTitle.textContent = `${data.dateRange}: ${data.title}`;
+            modalBody.innerHTML = `<p>${data.details}</p>`;
+            modal.classList.add('open');
+        });
+
+        modalClose.addEventListener('click', () => {
+            modal.classList.remove('open');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('open');
+        });
+
+        // INITIALIZE ON LOAD
+        window.addEventListener('DOMContentLoaded', renderTimeline);
+    </script>
+</body>
+</html>
