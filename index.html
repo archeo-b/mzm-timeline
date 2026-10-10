@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg-dark: #0a0c10;
-            --panel-bg: rgba(18, 20, 26, 0.85);
+            --panel-bg: rgba(18, 20, 26, 0.88);
             --panel-border: rgba(212, 175, 55, 0.25);
             --gold-primary: #d4af37;
             --gold-light: #f3e5ab;
@@ -35,25 +35,31 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
-            /* Zakomponování obrázku 321.png přímo do pozadí jako muzejní vodoznak */
-            background-image: 
-                url('321.png'),
-                radial-gradient(circle at 50% 30%, rgba(30, 35, 45, 0.6) 0%, rgba(10, 12, 16, 0.95) 70%),
-                linear-gradient(to bottom, rgba(10,12,16,0.4), rgba(10,12,16,0.9));
-            background-repeat: no-repeat;
-            background-position: left 5% bottom 5%;
-            background-size: 350px auto, cover, cover;
-            background-blend-mode: luminosity, normal, normal;
             display: flex;
             flex-direction: column;
         }
 
-        /* Ambient light effect */
+        /* Celoplošné nedominantní pozadí z obrázku 321.png */
         body::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 50% 15%, rgba(212, 175, 55, 0.12) 0%, transparent 60%);
+            background-image: url('321.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            opacity: 0.08; /* Jemná nevtíravá průhlednost */
+            filter: blur(3px); /* Lehké rozostření do hloubky */
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Tmavá krycí vrstva pro zajištění kontrastu a čitelnosti */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 50% 30%, rgba(10, 12, 16, 0.75) 0%, rgba(10, 12, 16, 0.95) 80%);
             pointer-events: none;
             z-index: 0;
         }
@@ -296,7 +302,7 @@
             display: grid;
             grid-template-columns: 1fr 1.3fr 0.7fr;
             gap: 25px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 100px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 0 100px rgba(0,0,0,0.5);
             backdrop-filter: blur(10px);
             position: relative;
             z-index: 2;
