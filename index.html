@@ -54,7 +54,7 @@
 
         /* HEADER SECTION */
         header {
-            width: 100%;
+            text-align: center;
             padding-top: 10px;
             margin-bottom: 5px;
             position: relative;
@@ -62,38 +62,34 @@
         }
 
         .header-brand-container {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
+            gap: 25px;
             position: relative;
-            width: 100%;
-            height: 110px;
-            overflow: hidden;
+            z-index: 2;
         }
 
         /* 123.png vlevo, zrcadlově otočený */
         .artifact-header-img {
-            height: 100px;
+            height: 75px;
             width: auto;
             transform: scaleX(-1);
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
-            z-index: 3;
             flex-shrink: 0;
         }
 
         .title-text-group {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            margin-left: 25px;
-            z-index: 3;
+            align-items: center;
         }
 
         .title-main {
             font-family: 'Cinzel', serif;
-            font-size: 2.4rem;
+            font-size: 2.6rem;
             font-weight: 700;
-            letter-spacing: 5px;
+            letter-spacing: 6px;
             color: var(--text-bright);
             text-transform: uppercase;
             text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.2);
@@ -103,36 +99,37 @@
 
         .title-sub {
             font-family: 'Cinzel', serif;
-            font-size: 0.95rem;
-            letter-spacing: 8px;
+            font-size: 1rem;
+            letter-spacing: 10px;
             color: var(--gold-primary);
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
         .title-desc {
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            letter-spacing: 4px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
             color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            margin-top: 2px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* 321.png prolnutý vedle nadpisu */
+        /* Obrázek 321.png jako menší pozadí prosvítající dolů */
         .header-bg-image {
             position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            width: 70%;
+            right: -20px;
+            top: -15px;
+            width: 55%;
+            height: 220px;
             object-fit: cover;
-            /* Prolnutí (maska) do ztracena směrem doleva */
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);
-            mask-image: linear-gradient(to right, transparent 0%, black 40%);
-            opacity: 0.65;
-            z-index: 1;
+            -webkit-mask-image: radial-gradient(ellipse at 70% 30%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 75%);
+            mask-image: radial-gradient(ellipse at 70% 30%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 75%);
+            opacity: 0.35;
+            z-index: 0;
             pointer-events: none;
         }
 
@@ -571,12 +568,12 @@
                 <div class="title-text-group">
                     <h1 class="title-main">STARÉ HRADISKO</h1>
                     <div class="title-sub">KELTSKÉ OPPIDUM</div>
-                    <div class="title-desc">HISTORIE VÝZKUMŮ V ČASE</div>
                 </div>
-
-                <!-- Obrázek 321.png umístěný vedle nadpisu s plynulým prolnutím -->
-                <img src="321.png" alt="321.png" class="header-bg-image">
             </div>
+            <div class="title-desc">Lidé. Výzkumy. Objevy. Příběh, který stále pokračuje.</div>
+
+            <!-- Obrázek 321.png jako pozadí prosvítající vpravo nahoре -->
+            <img src="321.png" alt="321.png" class="header-bg-image">
         </header>
 
         <!-- TIMELINE SECTION -->
