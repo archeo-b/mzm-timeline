@@ -54,7 +54,7 @@
 
         /* HEADER SECTION */
         header {
-            text-align: center;
+            width: 100%;
             padding-top: 10px;
             margin-bottom: 5px;
             position: relative;
@@ -62,36 +62,38 @@
         }
 
         .header-brand-container {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 30px;
+            justify-content: flex-start;
             position: relative;
+            width: 100%;
+            height: 110px;
+            overflow: hidden;
         }
 
+        /* 123.png vlevo, zrcadlově otočený */
         .artifact-header-img {
-            height: 85px;
+            height: 100px;
             width: auto;
+            transform: scaleX(-1);
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
-            transition: transform 0.4s ease;
-            cursor: pointer;
-        }
-
-        .artifact-header-img:hover {
-            transform: scale(1.06);
+            z-index: 3;
+            flex-shrink: 0;
         }
 
         .title-text-group {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
+            margin-left: 25px;
+            z-index: 3;
         }
 
         .title-main {
             font-family: 'Cinzel', serif;
-            font-size: 2.6rem;
+            font-size: 2.4rem;
             font-weight: 700;
-            letter-spacing: 6px;
+            letter-spacing: 5px;
             color: var(--text-bright);
             text-transform: uppercase;
             text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.2);
@@ -101,21 +103,37 @@
 
         .title-sub {
             font-family: 'Cinzel', serif;
-            font-size: 1rem;
-            letter-spacing: 10px;
+            font-size: 0.95rem;
+            letter-spacing: 8px;
             color: var(--gold-primary);
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             font-weight: 600;
         }
 
         .title-desc {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
             color: var(--text-muted);
-            font-size: 0.95rem;
-            letter-spacing: 1px;
-            margin-top: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* 321.png prolnutý vedle nadpisu */
+        .header-bg-image {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 70%;
+            object-fit: cover;
+            /* Prolnutí (maska) do ztracena směrem doleva */
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 40%);
+            mask-image: linear-gradient(to right, transparent 0%, black 40%);
+            opacity: 0.65;
+            z-index: 1;
+            pointer-events: none;
         }
 
         /* TIMELINE SECTION */
@@ -298,7 +316,6 @@
             padding-right: 10px;
         }
 
-        /* Vlastní vzhled scrollbaru */
         .text-content-scrollable::-webkit-scrollbar {
             width: 6px;
         }
@@ -548,14 +565,18 @@
         <!-- HEADER SECTION -->
         <header id="appHeader">
             <div class="header-brand-container">
+                <!-- Zrcadleně otočený obrázek 123.png vlevo -->
+                <img src="123.png" alt="123.png" class="artifact-header-img">
+                
                 <div class="title-text-group">
                     <h1 class="title-main">STARÉ HRADISKO</h1>
                     <div class="title-sub">KELTSKÉ OPPIDUM</div>
+                    <div class="title-desc">HISTORIE VÝZKUMŮ V ČASE</div>
                 </div>
-                <!-- 123.png v záhlaví -->
-                <img src="123.png" alt="123.png" class="artifact-header-img">
+
+                <!-- Obrázek 321.png umístěný vedle nadpisu s plynulým prolnutím -->
+                <img src="321.png" alt="321.png" class="header-bg-image">
             </div>
-            <div class="title-desc">Lidé. Výzkumy. Objevy. Příběh, který stále pokračuje.</div>
         </header>
 
         <!-- TIMELINE SECTION -->
@@ -627,7 +648,7 @@
     <!-- JAVASCRIPT -->
     <script>
         const timelineData = [
-            { year: "1870", label: "test test", dateRange: "1870", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test. Tady může být mnohem delší text, který se bude v případě potřeby v levém panelu pohodlně scrollovat dolů.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
+            { year: "1870", label: "test test", dateRange: "1870", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
             { year: "1907", label: "test test", dateRange: "1907", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
             { year: "1925", label: "test test", dateRange: "1925 – 1928", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
             { year: "1949", label: "test test", dateRange: "1949", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
