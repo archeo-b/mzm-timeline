@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg-dark: #0a0c10;
-            --panel-bg: rgba(18, 20, 26, 0.85);
+            --panel-bg: rgba(18, 20, 26, 0.88);
             --panel-border: rgba(212, 175, 55, 0.25);
             --gold-primary: #d4af37;
             --gold-light: #f3e5ab;
@@ -39,33 +39,35 @@
             flex-direction: column;
         }
 
-        /* Pozadí umístěné víc vlevo, zmenšené a zřetelnější */
-        .page-background {
+        /* Ozdobné rohové prvky */
+        .corner-ornament {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('321.png');
-            background-repeat: no-repeat;
-            background-position: left 3% center; /* Zarovnání víc vlevo */
-            background-size: 45vh auto; /* Zmenšení na přiměřenou velikost */
-            opacity: 0.55; /* Vyšší zřetelnost */
-            filter: blur(0.8px);
+            width: 120px;
+            height: 120px;
             pointer-events: none;
-            z-index: 0;
+            z-index: 10;
+            opacity: 0.85;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
         }
 
-        /* Celková tmavá vrstva pro sjednocení kontrastu */
-        .page-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 12, 16, 0.7);
-            pointer-events: none;
-            z-index: 0;
+        .corner-lhr {
+            top: 15px;
+            left: 15px;
+        }
+
+        .corner-phr {
+            top: 15px;
+            right: 15px;
+        }
+
+        .corner-ldr {
+            bottom: 15px;
+            left: 15px;
+        }
+
+        .corner-pdr {
+            bottom: 15px;
+            right: 15px;
         }
 
         .container {
@@ -75,7 +77,7 @@
             max-width: 1600px;
             height: 100vh;
             margin: 0 auto;
-            padding: 20px 40px;
+            padding: 20px 50px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -554,9 +556,11 @@
 </head>
 <body>
 
-    <!-- Vrstva pozadí s obrázkem 321.png vlevo -->
-    <div class="page-background"></div>
-    <div class="page-overlay"></div>
+    <!-- Ozdobné rohové prvky -->
+    <img src="LHR.png" alt="Levý horní roh" class="corner-ornament corner-lhr">
+    <img src="PHR.png" alt="Pravý horní roh" class="corner-ornament corner-phr">
+    <img src="LDR.png" alt="Levý dolní roh" class="corner-ornament corner-ldr">
+    <img src="PDR.png" alt="Pravý dolní roh" class="corner-ornament corner-pdr">
 
     <div class="container">
         <!-- HEADER SECTION -->
