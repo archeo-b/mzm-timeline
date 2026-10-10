@@ -54,7 +54,7 @@
 
         /* HEADER SECTION */
         header {
-            text-align: center;
+            width: 100%;
             padding-top: 10px;
             margin-bottom: 5px;
             position: relative;
@@ -62,9 +62,9 @@
         }
 
         .header-brand-container {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 25px;
             position: relative;
             z-index: 2;
@@ -82,12 +82,12 @@
         .title-text-group {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .title-main {
             font-family: 'Cinzel', serif;
-            font-size: 2.6rem;
+            font-size: 2.5rem;
             font-weight: 700;
             letter-spacing: 6px;
             color: var(--text-bright);
@@ -99,36 +99,35 @@
 
         .title-sub {
             font-family: 'Cinzel', serif;
-            font-size: 1rem;
-            letter-spacing: 10px;
+            font-size: 0.95rem;
+            letter-spacing: 9px;
             color: var(--gold-primary);
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             font-weight: 600;
         }
 
         .title-desc {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 5px;
             color: var(--text-muted);
-            font-size: 0.95rem;
-            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 500;
             margin-top: 2px;
-            position: relative;
-            z-index: 2;
         }
 
-        /* Obrázek 321.png jako menší pozadí prosvítající dolů */
+        /* Obrázek 321.png - více prosvítající v pozadí */
         .header-bg-image {
             position: absolute;
             right: -20px;
-            top: -15px;
-            width: 55%;
-            height: 220px;
+            top: -25px;
+            width: 60%;
+            height: 250px;
             object-fit: cover;
-            -webkit-mask-image: radial-gradient(ellipse at 70% 30%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 75%);
-            mask-image: radial-gradient(ellipse at 70% 30%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 75%);
-            opacity: 0.35;
+            -webkit-mask-image: radial-gradient(ellipse at 70% 35%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 80%);
+            mask-image: radial-gradient(ellipse at 70% 35%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 80%);
+            opacity: 0.6;
             z-index: 0;
             pointer-events: none;
         }
@@ -568,11 +567,11 @@
                 <div class="title-text-group">
                     <h1 class="title-main">STARÉ HRADISKO</h1>
                     <div class="title-sub">KELTSKÉ OPPIDUM</div>
+                    <div class="title-desc">HISTORIE VÝZKUMŮ</div>
                 </div>
             </div>
-            <div class="title-desc">Lidé. Výzkumy. Objevy. Příběh, který stále pokračuje.</div>
 
-            <!-- Obrázek 321.png jako pozadí prosvítající vpravo nahoре -->
+            <!-- Obrázek 321.png prosvítající v pozadí vpravo -->
             <img src="321.png" alt="321.png" class="header-bg-image">
         </header>
 
