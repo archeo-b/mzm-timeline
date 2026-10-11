@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-dark: #0a0c10;
-            --panel-bg: rgba(18, 20, 26, 0.88);
+            --panel-bg: rgba(18, 20, 26, 0.85);
             --panel-border: rgba(212, 175, 55, 0.25);
             --gold-primary: #d4af37;
             --gold-light: #f3e5ab;
@@ -37,6 +37,21 @@
             position: relative;
             display: flex;
             flex-direction: column;
+        }
+
+        /* Velký pozadí obrázek 321.png prosvítající celou stránkou pod prvky */
+        .global-bg-artifact {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 55vw;
+            height: auto;
+            object-fit: contain;
+            opacity: 0.22;
+            -webkit-mask-image: radial-gradient(ellipse at 60% 40%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 95%);
+            mask-image: radial-gradient(ellipse at 60% 40%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0) 95%);
+            z-index: 0;
+            pointer-events: none;
         }
 
         .container {
@@ -115,22 +130,6 @@
             text-transform: uppercase;
             font-weight: 500;
             margin-top: 2px;
-        }
-
-        /* Obrázek 321.png - zhruba 2x větší, posunutý doleva, s plynulým slabnutím dolů */
-        .header-bg-image {
-            position: absolute;
-            right: 80px;
-            top: -50px;
-            width: 65%;
-            height: 480px;
-            object-fit: contain;
-            object-position: top right;
-            -webkit-mask-image: radial-gradient(ellipse at 65% 25%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 80%);
-            mask-image: radial-gradient(ellipse at 65% 25%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 80%);
-            opacity: 0.45;
-            z-index: 0;
-            pointer-events: none;
         }
 
         /* TIMELINE SECTION */
@@ -558,6 +557,9 @@
 </head>
 <body>
 
+    <!-- Globální pozadí - velký obrázek 321.png prosvítající pod vším -->
+    <img src="321.png" alt="321.png" class="global-bg-artifact">
+
     <div class="container">
         <!-- HEADER SECTION -->
         <header id="appHeader">
@@ -571,9 +573,6 @@
                     <div class="title-desc">HISTORIE VÝZKUMŮ</div>
                 </div>
             </div>
-
-            <!-- Obrázek 321.png - větší, posunutý doleva, s přechodem do ztracena -->
-            <img src="321.png" alt="321.png" class="header-bg-image">
         </header>
 
         <!-- TIMELINE SECTION -->
