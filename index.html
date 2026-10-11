@@ -29,8 +29,8 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            /* Moderní přechodové pozadí namísto čistě černé */
-            background: radial-gradient(circle at 50% 20%, #1c2230 0%, #0d1017 60%, #06080b 100%);
+            /* Záře vlevo, nejtmavší vpravo */
+            background: radial-gradient(circle at 20% 30%, #1c2230 0%, #0d1017 60%, #040507 100%);
             color: var(--text-main);
             height: 100vh;
             overflow: hidden;
@@ -117,17 +117,16 @@
             margin-top: 2px;
         }
 
-        /* Obrázek 321.png - posunutý níže a s viditelnou horní hranou */
+        /* Obrázek 321.png - zmenšený tak, aby byl vidět celý i s horní hranou */
         .header-bg-image {
             position: absolute;
-            right: 0px;
-            top: 35px;
-            width: 45%;
-            height: 190px;
-            object-fit: cover;
-            -webkit-mask-image: radial-gradient(ellipse at 70% 30%, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 75%);
-            mask-image: radial-gradient(ellipse at 70% 30%, rgba(0,0,0,1) 35%, rgba(0,0,0,0) 75%);
-            opacity: 0.65;
+            right: 20px;
+            top: 5px;
+            height: 95px;
+            width: auto;
+            object-fit: contain;
+            opacity: 0.55;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.9));
             z-index: 0;
             pointer-events: none;
         }
@@ -571,7 +570,7 @@
                 </div>
             </div>
 
-            <!-- Obrázek 321.png - posunutý níže s viditelnou horní hranou -->
+            <!-- Obrázek 321.png - zmenšený a kompletně viditelný -->
             <img src="321.png" alt="321.png" class="header-bg-image">
         </header>
 
