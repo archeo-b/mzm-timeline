@@ -117,16 +117,18 @@
             margin-top: 2px;
         }
 
-        /* Obrázek 321.png - zmenšený tak, aby byl vidět celý i s horní hranou */
+        /* Obrázek 321.png - původní větší velikost, posunutý tak, aby byla vidět celá horní hrana */
         .header-bg-image {
             position: absolute;
-            right: 20px;
-            top: 5px;
-            height: 95px;
-            width: auto;
+            right: -10px;
+            top: -10px;
+            width: 50%;
+            height: 200px;
             object-fit: contain;
-            opacity: 0.55;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.9));
+            object-position: top right;
+            -webkit-mask-image: radial-gradient(ellipse at 80% 25%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 85%);
+            mask-image: radial-gradient(ellipse at 80% 25%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 85%);
+            opacity: 0.6;
             z-index: 0;
             pointer-events: none;
         }
@@ -570,7 +572,7 @@
                 </div>
             </div>
 
-            <!-- Obrázek 321.png - zmenšený a kompletně viditelný -->
+            <!-- Obrázek 321.png - původní velikost, viditelná horní hrana -->
             <img src="321.png" alt="321.png" class="header-bg-image">
         </header>
 
