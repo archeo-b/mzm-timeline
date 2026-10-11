@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-dark: #0a0c10;
-            --panel-bg: rgba(18, 20, 26, 0.72); /* Zprůhledněno, aby pod ním obrázek prosvítal */
+            --panel-bg: rgba(18, 20, 26, 0.72);
             --panel-border: rgba(212, 175, 55, 0.25);
             --gold-primary: #d4af37;
             --gold-light: #f3e5ab;
@@ -39,11 +39,11 @@
             flex-direction: column;
         }
 
-        /* Globální pozadí obrázek 321.png - prosvítající přes celou stránku včetně dolního panelu */
+        /* Globální pozadí obrázek 321.png - posunutý výše, horní okraj lehce přesahuje */
         .global-bg-artifact {
             position: absolute;
             right: 25px;
-            top: 0px;
+            top: -25px;
             width: 48vw;
             height: auto;
             object-fit: contain;
@@ -557,7 +557,7 @@
 </head>
 <body>
 
-    <!-- Globální pozadí - obrázek 321.png prosvítající pod hlavičkou, osou i dolním panelem -->
+    <!-- Globální pozadí - obrázek 321.png mírně přesahující horní okraj -->
     <img src="321.png" alt="321.png" class="global-bg-artifact">
 
     <div class="container">
