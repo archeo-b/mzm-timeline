@@ -117,18 +117,18 @@
             margin-top: 2px;
         }
 
-        /* Obrázek 321.png - velký, zasahující dolů do časové osy */
+        /* Obrázek 321.png - zhruba 2x větší, posunutý doleva, s plynulým slabnutím dolů */
         .header-bg-image {
             position: absolute;
-            right: -30px;
-            top: -20px;
-            width: 45%;
-            height: 340px;
+            right: 80px;
+            top: -50px;
+            width: 65%;
+            height: 480px;
             object-fit: contain;
             object-position: top right;
-            -webkit-mask-image: radial-gradient(ellipse at 75% 25%, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 80%);
-            mask-image: radial-gradient(ellipse at 75% 25%, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 80%);
-            opacity: 0.55;
+            -webkit-mask-image: radial-gradient(ellipse at 65% 25%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 80%);
+            mask-image: radial-gradient(ellipse at 65% 25%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 80%);
+            opacity: 0.45;
             z-index: 0;
             pointer-events: none;
         }
@@ -572,7 +572,7 @@
                 </div>
             </div>
 
-            <!-- Obrázek 321.png - velký, zasahující do časové osy -->
+            <!-- Obrázek 321.png - větší, posunutý doleva, s přechodem do ztracena -->
             <img src="321.png" alt="321.png" class="header-bg-image">
         </header>
 
