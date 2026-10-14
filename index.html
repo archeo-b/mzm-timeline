@@ -700,23 +700,17 @@
 
     <!-- JAVASCRIPT -->
     <script>
-        const sampleImages1870 = [];
+        const sampleImages1907 = [];
         for(let i = 1; i <= 25; i++) {
-            sampleImages1870.push("321.png");
+            sampleImages1907.push("321.png");
         }
 
         const timelineData = [
             { 
-                year: "1870", label: "test test", dateRange: "1870", title: "test test test", 
-                desc: "test test test test test test test test test test test test test test test test test test test test.", 
-                image: "321.png", 
-                images: sampleImages1870 
-            },
-            { 
                 year: "1907", label: "test test", dateRange: "1907", title: "test test test", 
                 desc: "test test test test test test test test test test test test test test test test test test test test.", 
                 image: "321.png", 
-                images: ["321.png", "321.png"] 
+                images: sampleImages1907 
             },
             { 
                 year: "1925", label: "test test", dateRange: "1925 – 1928", title: "test test test", 
@@ -756,7 +750,7 @@
             }
         ];
 
-        let currentIndex = 1; // Začíná rokem 1907
+        let currentIndex = 0; // Začíná na prvním prvku, což je nyní 1907
         let currentGalleryPage = 0;
         const itemsPerPage = 6;
 
@@ -973,7 +967,7 @@
             prevLightboxImage();
         });
 
-        // Keyboard support (Arrows for lightbox, left/right on timeline)
+        // Keyboard support
         window.addEventListener('keydown', (e) => {
             if (imageZoomModal.classList.contains('open')) {
                 if (e.key === 'ArrowRight') nextLightboxImage();
@@ -991,7 +985,6 @@
 
         mainMediaDisplay.addEventListener('click', () => {
             const data = timelineData[currentIndex];
-            // Když se klikne na hlavní náhled, otevřeme lupu se všemi obrázky daného období (nebo aspoň hlavním)
             const allImgs = (data.images && data.images.length > 0) ? data.images : (data.image ? [data.image] : []);
             if (allImgs.length > 0) {
                 openLightbox(allImgs, 0);
@@ -1026,7 +1019,6 @@
             zoomableImg.style.transform = `translate(${imgPosX}px, ${imgPosY}px) scale(${currentScale})`;
         }
 
-        // Mouse Wheel Zoom
         zoomableImg.addEventListener('wheel', (e) => {
             e.preventDefault();
             if (e.deltaY < 0) {
@@ -1038,7 +1030,6 @@
             updateTransform();
         });
 
-        // Mouse Drag to Pan or Swipe between images
         zoomableImg.addEventListener('mousedown', (e) => {
             isImageDragging = true;
             startDragX = e.clientX - imgPosX;
@@ -1057,7 +1048,6 @@
         window.addEventListener('mouseup', (e) => {
             if (!isImageDragging) return;
             isImageDragging = false;
-            // Pokud není zazoomováno (scale === 1), zkusíme gesto potažení (swipe)
             if (currentScale === 1) {
                 const diffX = e.clientX - touchStartX;
                 if (Math.abs(diffX) > 60) {
@@ -1067,7 +1057,6 @@
             }
         });
 
-        // Touch Pinch & Swipe for Mobile/Touchscreens
         zoomableImg.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 initialTouchDist = Math.hypot(
