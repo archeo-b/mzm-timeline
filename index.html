@@ -29,7 +29,6 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            /* Záře vlevo, nejtmavší vpravo */
             background: radial-gradient(circle at 20% 30%, #1c2230 0%, #0d1017 60%, #040507 100%);
             color: var(--text-main);
             height: 100vh;
@@ -39,7 +38,7 @@
             flex-direction: column;
         }
 
-        /* Globální pozadí obrázek 321.png - zřetelnější pod dolním boxem, plynulý přechod jinde */
+        /* Globální pozadí obrázek 321.png */
         .global-bg-artifact {
             position: absolute;
             right: 25px;
@@ -85,7 +84,6 @@
             z-index: 2;
         }
 
-        /* 123.png vlevo, zrcadlově otočený */
         .artifact-header-img {
             height: 75px;
             width: auto;
@@ -298,7 +296,7 @@
             max-height: calc(100vh - 240px);
         }
 
-        /* LEFT COLUMN: TEXT CONTENT (S možností scrollování) */
+        /* LEFT COLUMN: TEXT CONTENT */
         .text-col {
             display: flex;
             flex-direction: column;
@@ -358,7 +356,7 @@
             -webkit-user-select: text;
         }
 
-        /* CENTER COLUMN: MAIN DISPLAY / PLACEHOLDER */
+        /* CENTER COLUMN: MAIN DISPLAY */
         .main-media-col {
             position: relative;
             border-radius: 8px;
@@ -370,9 +368,8 @@
             cursor: pointer;
         }
 
-        .main-media-col:hover .placeholder-box {
+        .main-media-col:hover {
             border-color: var(--gold-primary);
-            background: rgba(212, 175, 55, 0.05);
         }
 
         .media-container {
@@ -383,35 +380,18 @@
             align-items: center;
             justify-content: center;
             background: rgba(15, 18, 24, 0.6);
+            overflow: hidden;
         }
 
-        .placeholder-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            color: var(--text-muted);
-            border: 2px dashed rgba(212, 175, 55, 0.2);
-            border-radius: 12px;
-            padding: 40px;
-            width: 80%;
-            height: 70%;
-            background: rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+        .media-preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
         }
 
-        .placeholder-box svg {
-            width: 48px;
-            height: 48px;
-            stroke: var(--gold-dark);
-        }
-
-        .placeholder-box span {
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            text-transform: uppercase;
+        .main-media-col:hover .media-preview-img {
+            transform: scale(1.03);
         }
 
         .media-caption {
@@ -423,6 +403,7 @@
             background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
             font-size: 0.85rem;
             color: #e2e8f0;
+            z-index: 2;
         }
 
         .media-caption-title {
@@ -435,12 +416,21 @@
             color: var(--text-muted);
         }
 
-        /* RIGHT COLUMN: GALLERY GRID PLACEHOLDERS */
+        /* RIGHT COLUMN: GALLERY CONTAINER WITH PAGINATION */
+        .right-gallery-col {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
         .gallery-grid-col {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 10px;
+            flex: 1;
+            min-height: 0;
         }
 
         .grid-item {
@@ -462,20 +452,73 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
+        .grid-thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .grid-item:hover .grid-thumb-img {
+            transform: scale(1.05);
+        }
+
         .grid-placeholder {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             color: var(--text-muted);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
 
         .grid-placeholder svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             stroke: rgba(212, 175, 55, 0.4);
+        }
+
+        /* PAGINATION CONTROLS */
+        .gallery-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .page-btn {
+            background: rgba(18, 20, 26, 0.8);
+            border: 1px solid var(--panel-border);
+            color: var(--gold-primary);
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--gold-primary);
+            color: #000;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
         }
 
         /* IMAGE ZOOM LIGHTBOX MODAL */
@@ -557,14 +600,13 @@
 </head>
 <body>
 
-    <!-- Globální pozadí - obrázek 321.png zřetelnější pod dolním panelem -->
+    <!-- Globální pozadí - obrázek 321.png -->
     <img src="321.png" alt="321.png" class="global-bg-artifact">
 
     <div class="container">
         <!-- HEADER SECTION -->
         <header id="appHeader">
             <div class="header-brand-container">
-                <!-- Zrcadleně otočený obrázek 123.png vlevo -->
                 <img src="123.png" alt="123.png" class="artifact-header-img">
                 
                 <div class="title-text-group">
@@ -605,30 +647,25 @@
                 </div>
             </div>
 
-            <!-- Center: Main Media Display (Clickable for zoom) -->
+            <!-- Center: Main Media Display -->
             <div class="main-media-col fade-in" id="mainMediaDisplay">
-                <div class="media-container" id="mediaContainerBox">
-                    <div class="placeholder-box">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
-                        </svg>
-                        <span>Aktivní položka (Klikněte pro zvětšení)</span>
-                    </div>
-                </div>
+                <div class="media-container" id="mediaContainerBox"></div>
                 <div class="media-caption">
                     <div class="media-caption-title" id="displayCaptionTitle">test test test</div>
                     <div class="media-caption-sub" id="displayCaptionSub">test test test</div>
                 </div>
             </div>
 
-            <!-- Right: Secondary Placeholders Grid -->
-            <div class="gallery-grid-col fade-in">
-                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
-                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
-                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
-                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
-                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
-                <div class="grid-item"><div class="grid-placeholder"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg><span>test</span></div></div>
+            <!-- Right: Gallery Grid with Pagination (Supports 100+ images) -->
+            <div class="right-gallery-col fade-in">
+                <div class="gallery-grid-col" id="galleryGridCol">
+                    <!-- Dynamicky generované miniatury (2x3 grid) -->
+                </div>
+                <div class="gallery-pagination">
+                    <button class="page-btn" id="prevPageBtn" title="Předchozí stránka">&lt;</button>
+                    <span class="page-info" id="pageInfo">Strana 1 / 1</span>
+                    <button class="page-btn" id="nextPageBtn" title="Další stránka">&gt;</button>
+                </div>
             </div>
         </main>
     </div>
@@ -643,18 +680,74 @@
 
     <!-- JAVASCRIPT -->
     <script>
+        // Příklad dat, kde první období obsahuje např. 25 obrázků (můžete jich doplnit až stovku)
+        const sampleImages1870 = [];
+        for(let i = 1; i <= 25; i++) {
+            sampleImages1870.push("321.png");
+        }
+
         const timelineData = [
-            { year: "1870", label: "test test", dateRange: "1870", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
-            { year: "1907", label: "test test", dateRange: "1907", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
-            { year: "1925", label: "test test", dateRange: "1925 – 1928", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
-            { year: "1949", label: "test test", dateRange: "1949", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
-            { year: "1960", label: "test test", dateRange: "1960", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
-            { year: "1980", label: "test test", dateRange: "1980", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
-            { year: "2000", label: "test test", dateRange: "2000", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" },
-            { year: "2020", label: "test test", dateRange: "2020", title: "test test test", desc: "test test test test test test test test test test test test test test test test test test test test.", captionTitle: "test test test", captionSub: "test test test", image: "321.png" }
+            { 
+                year: "1870", label: "test test", dateRange: "1870", title: "test test test", 
+                desc: "test test test test test test test test test test test test test test test test test test test test.", 
+                captionTitle: "test test test", captionSub: "test test test", 
+                image: "321.png", 
+                images: sampleImages1870 
+            },
+            { 
+                year: "1907", label: "test test", dateRange: "1907", title: "test test test", 
+                desc: "test test test test test test test test test test test test test test test test test test test test.", 
+                captionTitle: "test test test", captionSub: "test test test", 
+                image: "321.png", 
+                images: ["321.png", "321.png"] 
+            },
+            { 
+                year: "1925", label: "test test", dateRange: "1925 – 1928", title: "test test test", 
+                desc: "test test test test test test test test test test test test test test test test test test test test.", 
+                captionTitle: "test test test", captionSub: "test test test", 
+                image: "321.png", 
+                images: ["321.png", "321.png", "321.png"] 
+            },
+            { 
+                year: "1949", label: "test test", dateRange: "1949", title: "test test test", 
+                desc: "test test test test test test test test test test test test test test test test test test test test.", 
+                captionTitle: "test test test", captionSub: "test test test", 
+                image: "321.png", 
+                images: [] 
+            },
+            { 
+                year: "1960", label: "test test", dateRange: "1960", title: "test test test", 
+                desc: "test test test test test test test test test test test test test test test test test test test test.", 
+                captionTitle: "test test test", captionSub: "test test test", 
+                image: "321.png", 
+                images: ["321.png", "321.png", "321.png", "321.png"] 
+            },
+            { 
+                year: "1980", label: "test test", dateRange: "1980", title: "test test test", 
+                desc: "test test test test test test test test test test test test test test test test test test test test.", 
+                captionTitle: "test test test", captionSub: "test test test", 
+                image: "321.png", 
+                images: ["321.png"] 
+            },
+            { 
+                year: "2000", label: "test test", dateRange: "2000", title: "test test test", 
+                desc: "test test test test test test test test test test test test test test test test test test test test.", 
+                captionTitle: "test test test", captionSub: "test test test", 
+                image: "321.png", 
+                images: ["321.png", "321.png"] 
+            },
+            { 
+                year: "2020", label: "test test", dateRange: "2020", title: "test test test", 
+                desc: "test test test test test test test test test test test test test test test test test test test test.", 
+                captionTitle: "test test test", captionSub: "test test test", 
+                image: "321.png", 
+                images: ["321.png", "321.png", "321.png"] 
+            }
         ];
 
         let currentIndex = 2;
+        let currentGalleryPage = 0;
+        const itemsPerPage = 6; // 2x3 mřížka
 
         const timelineTrack = document.getElementById('timelineTrack');
         const timelineContainer = document.getElementById('timelineContainer');
@@ -664,6 +757,11 @@
         const displayCaptionTitle = document.getElementById('displayCaptionTitle');
         const displayCaptionSub = document.getElementById('displayCaptionSub');
         const contentPanel = document.getElementById('contentPanel');
+        const mediaContainerBox = document.getElementById('mediaContainerBox');
+        const galleryGridCol = document.getElementById('galleryGridCol');
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const pageInfo = document.getElementById('pageInfo');
         
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
@@ -701,6 +799,7 @@
         function selectTimelineItem(index) {
             if (index < 0 || index >= timelineData.length) return;
             currentIndex = index;
+            currentGalleryPage = 0; // Při změně období resetujeme stránkování galerie na začátek
 
             document.querySelectorAll('.timeline-item').forEach((el, idx) => {
                 if (idx === currentIndex) {
@@ -746,7 +845,81 @@
             displayDesc.textContent = data.desc;
             displayCaptionTitle.textContent = data.captionTitle;
             displayCaptionSub.textContent = data.captionSub;
+
+            // Hlavní náhled
+            if (data.image) {
+                mediaContainerBox.innerHTML = `<img src="${data.image}" alt="${data.title}" class="media-preview-img">`;
+            } else {
+                mediaContainerBox.innerHTML = `
+                    <div class="placeholder-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" />
+                        </svg>
+                        <span>Aktivní položka (Klikněte pro zvětšení)</span>
+                    </div>`;
+            }
+
+            renderGalleryPage();
         }
+
+        function renderGalleryPage() {
+            const data = timelineData[currentIndex];
+            galleryGridCol.innerHTML = '';
+            
+            const images = data.images || [];
+            const totalImages = images.length;
+            const totalPages = Math.max(1, Math.ceil(totalImages / itemsPerPage));
+
+            if (currentGalleryPage >= totalPages) currentGalleryPage = totalPages - 1;
+            if (currentGalleryPage < 0) currentGalleryPage = 0;
+
+            const startIdx = currentGalleryPage * itemsPerPage;
+            
+            // Vykreslení přesně 6 položek pro aktuální stránku
+            for (let i = 0; i < itemsPerPage; i++) {
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item';
+                
+                const imgIndex = startIdx + i;
+                if (images[imgIndex]) {
+                    const imgUrl = images[imgIndex];
+                    gridItem.innerHTML = `<img src="${imgUrl}" alt="Náhled" class="grid-thumb-img">`;
+                    gridItem.addEventListener('click', () => {
+                        zoomableImg.src = imgUrl;
+                        resetZoom();
+                        imageZoomModal.classList.add('open');
+                    });
+                } else {
+                    gridItem.innerHTML = `
+                        <div class="grid-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0z" /></svg>
+                            <span>test</span>
+                        </div>`;
+                }
+                galleryGridCol.appendChild(gridItem);
+            }
+
+            // Aktualizace ovládání stránkování
+            pageInfo.textContent = `Strana ${currentGalleryPage + 1} / ${totalPages}`;
+            prevPageBtn.disabled = currentGalleryPage === 0;
+            nextPageBtn.disabled = currentGalleryPage >= totalPages - 1;
+        }
+
+        prevPageBtn.addEventListener('click', () => {
+            if (currentGalleryPage > 0) {
+                currentGalleryPage--;
+                renderGalleryPage();
+            }
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            const data = timelineData[currentIndex];
+            const totalPages = Math.ceil((data.images || []).length / itemsPerPage);
+            if (currentGalleryPage < totalPages - 1) {
+                currentGalleryPage++;
+                renderGalleryPage();
+            }
+        });
 
         // ZOOM & PAN LOGIC FOR LIGHTBOX
         let currentScale = 1;
@@ -769,9 +942,11 @@
 
         mainMediaDisplay.addEventListener('click', () => {
             const data = timelineData[currentIndex];
-            zoomableImg.src = data.image || '321.png';
-            resetZoom();
-            imageZoomModal.classList.add('open');
+            if (data.image) {
+                zoomableImg.src = data.image;
+                resetZoom();
+                imageZoomModal.classList.add('open');
+            }
         });
 
         zoomCloseBtn.addEventListener('click', () => {
